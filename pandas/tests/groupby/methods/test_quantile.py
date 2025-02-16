@@ -8,6 +8,75 @@ from pandas import (
 )
 import pandas._testing as tm
 
+import pandas as pd
+import numpy as np
+import pytest
+
+def test_quantile_mixed_dtypes():
+    """Ensure quantile works correctly with a mix of integer and float values in the same group."""
+    df = pd.DataFrame({
+        "group": ["A", "A", "B", "B"],
+        "value": [10, 20.5, 5.0, 15]
+    })
+    grouped = df.groupby("group")
+    result = grouped["value"].quantile(0.5)
+    
+    expected = pd.Series([15.25, 10.0], index=["A", "B"])
+    assert result.equals(expected)
+
+def test_quantile_empty_dataframe():
+    """Ensure function does not crash when given an empty DataFrame."""
+    df = pd.DataFrame({"group": [], "value": []})
+    grouped = df.groupby("group")
+
+    result = grouped["value"].quantile(0.5)
+    assert result.empty
+
+def test_quantile_single_row_group():
+    """Ensure function correctly computes quantiles when a group contains only a single row."""
+    df = pd.DataFrame({"group": ["A", "B", "B"], "value": [10, 20, 30]})
+    grouped = df.groupby("group")
+    result = grouped["value"].quantile(0.5)
+
+    expected = pd.Series([10, 25], index=["A", "B"])
+    assert result.equals(expected)
+
+def test_quantile_large_dataframe():
+    """Ensure function performs well on very large datasets."""
+    np.random.seed(42)
+    df = pd.DataFrame({
+        "group": np.random.choice(["A", "B", "C"], size=1_000_000),
+        "value": np.random.randn(1_000_000)
+    })
+    grouped = df.groupby("group")
+    result = grouped["value"].quantile(0.5)
+
+    assert result.shape[0] == 3  # Ensure three groups are processed
+    assert not result.isna().any()  # Ensure no NaNs in the result
+
+def test_quantile_all_zeroes():
+    """Ensure quantile computation works correctly when all values in a column are zero."""
+    df = pd.DataFrame({"group": ["A", "A", "B", "B"], "value": [0, 0, 0, 0]})
+    grouped = df.groupby("group")
+    result = grouped["value"].quantile(0.5)
+
+    expected = pd.Series([0, 0], index=["A", "B"])
+    assert result.equals(expected)
+
+def test_quantile_multiindex_unbalanced_groups():
+    """Ensure quantile computation works correctly with unbalanced group sizes in a MultiIndex DataFrame."""
+    df = pd.DataFrame({
+        "A": ["A", "A", "A", "B", "B"],
+        "B": ["X", "X", "Y", "Y", "Y"],
+        "value": [1, 2, 3, 4, 5]
+    }).set_index(["A", "B"])
+
+    grouped = df.groupby(level=["A", "B"])
+    result = grouped["value"].quantile(0.5)
+
+    expected = pd.Series([1.5, 3.0, 4.5], index=[("A", "X"), ("A", "Y"), ("B", "Y")])
+    assert result.equals(expected)
+
 
 @pytest.mark.parametrize(
     "interpolation", ["linear", "lower", "higher", "nearest", "midpoint"]
