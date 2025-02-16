@@ -4255,6 +4255,8 @@ class GroupBy(BaseGroupBy[NDFrameT]):
     
         mgr = self._get_data_to_aggregate(numeric_only=numeric_only, name="quantile")
         obj = self._wrap_agged_manager(mgr)
+    
+        # Group the data based on group labels
         splitter = self._grouper._get_splitter(obj)
         sdata = splitter._sorted_data
     
