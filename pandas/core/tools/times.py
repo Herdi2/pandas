@@ -288,4 +288,5 @@ if __name__ == '__main__':
     for i in range(1,len(branches_reached)):
         print('#'+str(i)+':',branches_reached[i])
     print("---------------------------")
-    print('COVERAGE SUM:', sum(branches_reached), '/ 16')
+    print('COVERAGE SUM:', sum(branches_reached[1:]), '/ 16')
+    print('COVERAGE PERCENTAGE:' , (sum(branches_reached[1:]) / 16) * 100,'%',sep=None)
