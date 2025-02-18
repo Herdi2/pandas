@@ -19,6 +19,11 @@ from pandas.core.dtypes.missing import notna
 if TYPE_CHECKING:
     from pandas._typing import DateTimeErrorChoices
 
+import pytest
+
+from pandas.compat import PY311
+from pandas import Series
+import pandas._testing as tm
 
 def to_time(
     arg,
@@ -201,3 +206,86 @@ def _guess_time_format_for_array(arr):
 # Global array for tracking branch access.
 branches_reached = [0]*17
 print("Array branches_reached initiated.")
+
+if __name__ == '__main__':
+
+    # EXISTING TEST CASES
+    def test_parsers_time(time_string):
+        assert to_time(time_string) == time(14, 15)
+
+    def test_odd_format():
+        new_string = "14.15"
+        msg = r"Cannot convert arg \['14\.15'\] to a time"
+        if not PY311:
+            with pytest.raises(ValueError, match=msg):
+                to_time(new_string)
+        assert to_time(new_string, format="%H.%M") == time(14, 15)
+
+    def test_arraylike():
+        arg = ["14:15", "20:20"]
+        expected_arr = [time(14, 15), time(20, 20)]
+        assert to_time(arg) == expected_arr
+        assert to_time(arg, format="%H:%M") == expected_arr
+        assert to_time(arg, infer_time_format=True) == expected_arr
+        assert to_time(arg, format="%I:%M%p", errors="coerce") == [None, None]
+
+        with pytest.raises(ValueError, match="errors must be"):
+            to_time(arg, format="%I:%M%p", errors="ignore")
+
+        msg = "Cannot convert.+to a time with given format"
+        with pytest.raises(ValueError, match=msg):
+            to_time(arg, format="%I:%M%p", errors="raise")
+
+        tm.assert_series_equal(
+            to_time(Series(arg, name="test")), Series(expected_arr, name="test")
+        )
+        
+        res = to_time(np.array(arg))
+        assert isinstance(res, list)
+        assert res == expected_arr
+
+    # EXTENDED COVERAGE TEST CASES
+    def test_None_arg():
+        arg = None
+        assert to_time(arg) == arg
+
+    def test_time_arg():
+        arg = time(14,15)
+        assert to_time(arg) == arg
+
+    def test_matrix_arg():
+        arg = np.array([[1,3,4],[1,2,4]])
+        msg = "arg must be a string, datetime, list, tuple, 1-d array, or Series"
+        with pytest.raises(TypeError, match=msg):
+            to_time(arg, format="%I:%M%p", errors="raise")
+  
+    def test_coerce_error():
+        arg = "14.15"
+        assert to_time(arg,format=None,errors='coerce') == None
+
+    # RUN EXISTING TEST CASES
+    time_strings = ["14:15",
+                "1415",
+                "2:15pm",
+                "0215pm",
+                "14:15:00",
+                "141500",
+                "2:15:00pm",
+                "021500pm",
+                time(14, 15)]
+    for entry in time_strings:
+        test_parsers_time(entry)
+    test_odd_format()
+    test_arraylike()
+
+    # RUN EXTENDED COVERAGE
+    test_None_arg()
+    test_time_arg()
+    test_matrix_arg()
+    test_coerce_error()
+
+    # RESULTS
+    for i in range(1,len(branches_reached)):
+        print('#'+str(i)+':',branches_reached[i])
+    print("---------------------------")
+    print('COVERAGE SUM:', sum(branches_reached), '/ 16')
