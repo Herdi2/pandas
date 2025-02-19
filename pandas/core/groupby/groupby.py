@@ -1598,32 +1598,43 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         0  1  4
         1  2  6
         """
+        self.record_branch(1) # Entry point
         if include_groups:
+            self.record_branch(2)
             raise ValueError("include_groups=True is no longer allowed.")
         if isinstance(func, str):
+            self.record_branch(3)
             if hasattr(self, func):
+                self.record_branch(4)
                 res = getattr(self, func)
                 if callable(res):
+                    self.record_branch(5)
                     return res(*args, **kwargs)
                 elif args or kwargs:
+                    self.record_branch(6)
                     raise ValueError(f"Cannot pass arguments to property {func}")
+                self.record_branch(7)
                 return res
-
             else:
+                self.record_branch(8)
                 raise TypeError(f"apply func should be callable, not '{func}'")
 
         elif args or kwargs:
+            self.record_branch(9)
             if callable(func):
+                self.record_branch(10)
 
                 @wraps(func)
                 def f(g):
                     return func(g, *args, **kwargs)
 
             else:
+                self.record_branch(11)
                 raise ValueError(
                     "func must be a callable if args or kwargs are supplied"
                 )
         else:
+            self.record_branch(12)
             f = func
 
         return self._python_apply_general(f, self._obj_with_exclusions)
