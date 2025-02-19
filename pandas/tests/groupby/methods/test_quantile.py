@@ -1,5 +1,5 @@
 import numpy as np
-import pytest
+import pytest, atexit
 
 import pandas as pd
 from pandas import (
@@ -8,11 +8,12 @@ from pandas import (
 )
 import pandas._testing as tm
 
-from pandas.core.groupby.groupby import branch_coverage
+from pandas.core.groupby.groupby import branch_coverage_quantile
+from pandas.tests.config import coverage_wrapper
 
 # import quantile  # Import quantile function
 # from pandas.core.groupby.groupby import branch_coverage 
-
+atexit.register(coverage_wrapper(branch_coverage_quantile))
 
 def test_quantile_mixed_dtypes():
     """Ensure quantile works correctly with a mix of integer and float values in the same group."""
