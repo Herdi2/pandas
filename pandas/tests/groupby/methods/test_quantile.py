@@ -8,8 +8,10 @@ from pandas import (
 )
 import pandas._testing as tm
 
-from pandas.core.groupby import quantile  # Import quantile function
-from pandas.core.groupby.quantile import branch_coverage 
+from pandas.core.groupby.groupby import branch_coverage
+
+# import quantile  # Import quantile function
+# from pandas.core.groupby.groupby import branch_coverage 
 
 
 def test_quantile_mixed_dtypes():
