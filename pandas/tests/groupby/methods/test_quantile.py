@@ -8,9 +8,9 @@ from pandas import (
 )
 import pandas._testing as tm
 
-import pandas as pd
-import numpy as np
-import pytest
+from pandas.core.groupby import quantile  # Import quantile function
+from pandas.core.groupby.quantile import branch_coverage 
+
 
 def test_quantile_mixed_dtypes():
     """Ensure quantile works correctly with a mix of integer and float values in the same group."""
