@@ -1524,17 +1524,17 @@ def test_nonreducer_nonstransform():
 # Testing that increases branch coverge
 # 
 
-def test_branch_6():
+def test_passing_args_to_property():
     """
         Assert: We cannot pass arguments to a property that takes none
-        Expectation: Fails on branch 6
+        Expectation: Fails on branch 6, throwing a ValueError
     """
     df = pd.DataFrame({"func": []})
     grouped = df.groupby("func")
     with pytest.raises(ValueError, match="Cannot pass arguments to property func"):
         grouped.apply(func="func", args=(0, 1))
 
-def test_branch_7():
+def test_apply_with_property():
     """
         Assert: Property can be passed in as string to function in apply
         Expectation: Succeeds, and reaches branch 7
@@ -1544,17 +1544,17 @@ def test_branch_7():
     # The result will be the underlying data structure
     assert isinstance(grouped.apply(func="func"), pd.api.typing.SeriesGroupBy)
 
-def test_branch_8():
+def test_uncallable_string_as_function():
     """
-        Assert: We cannot pass a string as function that is not callable
-        Expectation: Fails on branch 8
+        Assert: We cannot pass a string as function that is not callable nor a property
+        Expectation: Fails on branch 8, throwing a TypeError
     """
     df = pd.DataFrame({"func": [3]})
     grouped = df.groupby("func")
     with pytest.raises(TypeError, match="apply func should be callable, not 'not_func'"):
         grouped.apply(func="not_func")
     
-def test_branch_11():
+def test_func_callable_given_args():
     """
         Assert: A function must be callable if given the args and kwargs
         Expectation: Fails on branch 11
@@ -1562,5 +1562,6 @@ def test_branch_11():
     df = pd.DataFrame({"func": [3]})
     grouped = df.groupby("func")
     with pytest.raises(ValueError, match="func must be a callable if args or kwargs are supplied"):
+        # A boolean is not a function, and therefore cannot be passed any args
         grouped.apply(func=True, args=(1, 2))
     
