@@ -4,7 +4,7 @@ from datetime import (
 )
 
 import numpy as np
-import pytest
+import pytest, atexit
 
 import pandas as pd
 from pandas import (
@@ -16,7 +16,10 @@ from pandas import (
 )
 import pandas._testing as tm
 from pandas.tests.groupby import get_groupby_method_args
+from pandas.core.groupby.groupby import branch_coverage_apply
+from pandas.tests.config import coverage_wrapper
 
+atexit.register(coverage_wrapper(branch_coverage_apply))
 
 def test_apply_func_that_appends_group_to_list_without_copy():
     # GH: 17718
@@ -1514,3 +1517,51 @@ def test_nonreducer_nonstransform():
     ).set_index(["cat1", "cat2"])["rank"]
     result = df.groupby("cat1").apply(f)
     tm.assert_series_equal(result, expected)
+
+
+
+# 
+# Testing that increases branch coverge
+# 
+
+def test_passing_args_to_property():
+    """
+        Assert: We cannot pass arguments to a property that takes none
+        Expectation: Fails on branch 6, throwing a ValueError
+    """
+    df = pd.DataFrame({"func": []})
+    grouped = df.groupby("func")
+    with pytest.raises(ValueError, match="Cannot pass arguments to property func"):
+        grouped.apply(func="func", args=(0, 1))
+
+def test_apply_with_property():
+    """
+        Assert: Property can be passed in as string to function in apply
+        Expectation: Succeeds, and reaches branch 7
+    """
+    df = pd.DataFrame({"func": [3]})
+    grouped = df.groupby("func")
+    # The result will be the underlying data structure
+    assert isinstance(grouped.apply(func="func"), pd.api.typing.SeriesGroupBy)
+
+def test_uncallable_string_as_function():
+    """
+        Assert: We cannot pass a string as function that is not callable nor a property
+        Expectation: Fails on branch 8, throwing a TypeError
+    """
+    df = pd.DataFrame({"func": [3]})
+    grouped = df.groupby("func")
+    with pytest.raises(TypeError, match="apply func should be callable, not 'not_func'"):
+        grouped.apply(func="not_func")
+    
+def test_func_callable_given_args():
+    """
+        Assert: A function must be callable if given the args and kwargs
+        Expectation: Fails on branch 11
+    """
+    df = pd.DataFrame({"func": [3]})
+    grouped = df.groupby("func")
+    with pytest.raises(ValueError, match="func must be a callable if args or kwargs are supplied"):
+        # A boolean is not a function, and therefore cannot be passed any args
+        grouped.apply(func=True, args=(1, 2))
+    
