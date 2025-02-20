@@ -1605,40 +1605,52 @@ class GroupBy(BaseGroupBy[NDFrameT]):
             raise ValueError("include_groups=True is no longer allowed.")
         if isinstance(func, str):
             self.record_branch(3,branch_coverage_apply)
-            if hasattr(self, func):
-                self.record_branch(4, branch_coverage_apply)
-                res = getattr(self, func)
-                if callable(res):
-                    self.record_branch(5, branch_coverage_apply)
-                    return res(*args, **kwargs)
-                elif args or kwargs:
-                    self.record_branch(6, branch_coverage_apply)
-                    raise ValueError(f"Cannot pass arguments to property {func}")
-                self.record_branch(7, branch_coverage_apply)
-                return res
-            else:
-                self.record_branch(8, branch_coverage_apply)
-                raise TypeError(f"apply func should be callable, not '{func}'")
-
+            return self._apply_property_function(func, *args, **kwargs)
         elif args or kwargs:
             self.record_branch(9, branch_coverage_apply)
-            if callable(func):
-                self.record_branch(10, branch_coverage_apply)
-
-                @wraps(func)
-                def f(g):
-                    return func(g, *args, **kwargs)
-
-            else:
-                self.record_branch(11, branch_coverage_apply)
-                raise ValueError(
-                    "func must be a callable if args or kwargs are supplied"
-                )
+            f = self._apply_func_with_args(func, *args, **kwargs)
         else:
             self.record_branch(12, branch_coverage_apply)
             f = func
 
         return self._python_apply_general(f, self._obj_with_exclusions)
+
+    def _apply_property_function(self, func, *args, **kwargs):
+        """
+        Apply property `func` as a function, asserting that no arguments
+        are passed to it.
+        """
+        if hasattr(self, func):
+            self.record_branch(4, branch_coverage_apply)
+            res = getattr(self, func)
+            if callable(res):
+                self.record_branch(5, branch_coverage_apply)
+                return res(*args, **kwargs)
+            elif args or kwargs:
+                self.record_branch(6, branch_coverage_apply)
+                raise ValueError(f"Cannot pass arguments to property {func}")
+            self.record_branch(7, branch_coverage_apply)
+            return res
+        else:
+            self.record_branch(8, branch_coverage_apply)
+            raise TypeError(f"apply func should be callable, not '{func}'")
+
+    def _apply_func_with_args(self, func, *args, **kwargs):
+        """
+        Apply function `func` with the given arguments `args` and `kwargs`
+        """
+        if callable(func):
+            self.record_branch(10, branch_coverage_apply)
+
+            @wraps(func)
+            def f(g):
+                return func(g, *args, **kwargs)
+            return f
+        else:
+            self.record_branch(11, branch_coverage_apply)
+            raise ValueError(
+                "func must be a callable if args or kwargs are supplied"
+            )
 
     @final
     def _python_apply_general(
