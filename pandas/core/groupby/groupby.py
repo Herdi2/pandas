@@ -968,7 +968,8 @@ OutputFrameOrSeries = TypeVar("OutputFrameOrSeries", bound=NDFrame)
 
 
 # Global dictionary to track which branches are executed
-branch_coverage = {}
+branch_coverage_quantile = {}
+branch_coverage_apply = {}
 
 class GroupBy(BaseGroupBy[NDFrameT]):
     """
@@ -1598,32 +1599,43 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         0  1  4
         1  2  6
         """
+        self.record_branch(1, branch_coverage_apply) # Entry point
         if include_groups:
+            self.record_branch(2, branch_coverage_apply)
             raise ValueError("include_groups=True is no longer allowed.")
         if isinstance(func, str):
+            self.record_branch(3,branch_coverage_apply)
             if hasattr(self, func):
+                self.record_branch(4, branch_coverage_apply)
                 res = getattr(self, func)
                 if callable(res):
+                    self.record_branch(5, branch_coverage_apply)
                     return res(*args, **kwargs)
                 elif args or kwargs:
+                    self.record_branch(6, branch_coverage_apply)
                     raise ValueError(f"Cannot pass arguments to property {func}")
+                self.record_branch(7, branch_coverage_apply)
                 return res
-
             else:
+                self.record_branch(8, branch_coverage_apply)
                 raise TypeError(f"apply func should be callable, not '{func}'")
 
         elif args or kwargs:
+            self.record_branch(9, branch_coverage_apply)
             if callable(func):
+                self.record_branch(10, branch_coverage_apply)
 
                 @wraps(func)
                 def f(g):
                     return func(g, *args, **kwargs)
 
             else:
+                self.record_branch(11, branch_coverage_apply)
                 raise ValueError(
                     "func must be a callable if args or kwargs are supplied"
                 )
         else:
+            self.record_branch(12, branch_coverage_apply)
             f = func
 
         return self._python_apply_general(f, self._obj_with_exclusions)
@@ -4233,7 +4245,7 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         grb = dropped.groupby(grouper, as_index=self.as_index, sort=self.sort)
         return grb.nth(n)
     
-    def record_branch(self, branch_id):
+    def record_branch(self, branch_id, branch_coverage):
         """Track execution count of a specific branch."""
         if branch_id in branch_coverage:
             branch_coverage[branch_id] += 1
@@ -4251,7 +4263,7 @@ class GroupBy(BaseGroupBy[NDFrameT]):
     ):
         """Return group values at the given quantile."""
     
-        self.record_branch(1)  # Entry point
+        self.record_branch(1, branch_coverage_quantile)  # Entry point
     
         mgr = self._get_data_to_aggregate(numeric_only=numeric_only, name="quantile")
         obj = self._wrap_agged_manager(mgr)
@@ -4265,38 +4277,38 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         def pre_processor(vals: ArrayLike) -> tuple[np.ndarray, DtypeObj | None]:
             """Prepares input values and handles different data types."""
             if isinstance(vals.dtype, StringDtype) or is_object_dtype(vals.dtype):
-                self.record_branch(2)
+                self.record_branch(2, branch_coverage_quantile)
                 raise TypeError(f"dtype '{vals.dtype}' does not support operation 'quantile'")
     
             inference: DtypeObj | None = None
             if isinstance(vals, BaseMaskedArray) and is_numeric_dtype(vals.dtype):
-                self.record_branch(3)
+                self.record_branch(3, branch_coverage_quantile)
                 out = vals.to_numpy(dtype=float, na_value=np.nan)
                 inference = vals.dtype
             elif is_integer_dtype(vals.dtype):
-                self.record_branch(4)
+                self.record_branch(4, branch_coverage_quantile)
                 if isinstance(vals, ExtensionArray):
-                    self.record_branch(5)
+                    self.record_branch(5, branch_coverage_quantile)
                     out = vals.to_numpy(dtype=float, na_value=np.nan)
                 else:
                     out = vals
                 inference = np.dtype(np.int64)
             elif is_bool_dtype(vals.dtype) and isinstance(vals, ExtensionArray):
-                self.record_branch(6)
+                self.record_branch(6, branch_coverage_quantile)
                 out = vals.to_numpy(dtype=float, na_value=np.nan)
             elif is_bool_dtype(vals.dtype):
-                self.record_branch(7)
+                self.record_branch(7, branch_coverage_quantile)
                 raise TypeError("Cannot use quantile with bool dtype")
             elif needs_i8_conversion(vals.dtype):
-                self.record_branch(8)
+                self.record_branch(8, branch_coverage_quantile)
                 inference = vals.dtype
                 return vals, inference
             elif isinstance(vals, ExtensionArray) and is_float_dtype(vals.dtype):
-                self.record_branch(9)
+                self.record_branch(9, branch_coverage_quantile)
                 inference = np.dtype(np.float64)
                 out = vals.to_numpy(dtype=float, na_value=np.nan)
             else:
-                self.record_branch(10)
+                self.record_branch(10, branch_coverage_quantile)
                 out = np.asarray(vals)
     
             return out, inference
@@ -4309,24 +4321,24 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         ) -> ArrayLike:
             """Handles final output formatting and data type conversion."""
             if inference:
-                self.record_branch(11)
+                self.record_branch(11, branch_coverage_quantile)
                 if isinstance(orig_vals, BaseMaskedArray):
-                    self.record_branch(12)
+                    self.record_branch(12, branch_coverage_quantile)
                     assert result_mask is not None
     
                     if interpolation in {"linear", "midpoint"} and not is_float_dtype(orig_vals):
-                        self.record_branch(13)
+                        self.record_branch(13, branch_coverage_quantile)
                         return FloatingArray(vals, result_mask)
                     else:
-                        self.record_branch(14)
+                        self.record_branch(14, branch_coverage_quantile)
                         with warnings.catch_warnings():
                             warnings.filterwarnings("ignore", category=RuntimeWarning)
                             return type(orig_vals)(vals.astype(inference.numpy_dtype), result_mask)
     
                 elif not (is_integer_dtype(inference) and interpolation in {"linear", "midpoint"}):
-                    self.record_branch(15)
+                    self.record_branch(15, branch_coverage_quantile)
                     if needs_i8_conversion(inference):
-                        self.record_branch(16)
+                        self.record_branch(16, branch_coverage_quantile)
                         vals = vals.astype("i8").view(orig_vals._ndarray.dtype)
                         return orig_vals._from_backing_data(vals)
     
@@ -4336,18 +4348,18 @@ class GroupBy(BaseGroupBy[NDFrameT]):
             return vals
     
         if is_scalar(q):
-            self.record_branch(17)
+            self.record_branch(17, branch_coverage_quantile)
             qs = np.array([q], dtype=np.float64)
             pass_qs: None | np.ndarray = None
         else:
-            self.record_branch(18)
+            self.record_branch(18, branch_coverage_quantile)
             qs = np.asarray(q, dtype=np.float64)
             pass_qs = qs
     
         ids = self._grouper.ids
         ngroups = self._grouper.ngroups
         if self.dropna:
-            self.record_branch(19)
+            self.record_branch(19, branch_coverage_quantile)
             ids = ids[ids >= 0]
         nqs = len(qs)
     
@@ -4364,11 +4376,11 @@ class GroupBy(BaseGroupBy[NDFrameT]):
             """Handles computation logic for grouped quantiles."""
             orig_vals = values
             if isinstance(values, BaseMaskedArray):
-                self.record_branch(20)
+                self.record_branch(20, branch_coverage_quantile)
                 mask = values._mask
                 result_mask = np.zeros((ngroups, nqs), dtype=np.bool_)
             else:
-                self.record_branch(21)
+                self.record_branch(21, branch_coverage_quantile)
                 mask = isna(values)
                 result_mask = None
     
@@ -4377,17 +4389,17 @@ class GroupBy(BaseGroupBy[NDFrameT]):
     
             ncols = 1
             if vals.ndim == 2:
-                self.record_branch(22)
+                self.record_branch(22, branch_coverage_quantile)
                 ncols = vals.shape[0]
     
             out = np.empty((ncols, ngroups, nqs), dtype=np.float64)
     
             if is_datetimelike:
-                self.record_branch(23)
+                self.record_branch(23, branch_coverage_quantile)
                 vals = vals.view("i8")
     
             if vals.ndim == 1:
-                self.record_branch(24)
+                self.record_branch(24, branch_coverage_quantile)
                 func(
                     out[0],
                     values=vals,
@@ -4396,9 +4408,9 @@ class GroupBy(BaseGroupBy[NDFrameT]):
                     is_datetimelike=is_datetimelike,
                 )
             else:
-                self.record_branch(25)
+                self.record_branch(25, branch_coverage_quantile)
                 for i in range(ncols):
-                    self.record_branch(26)
+                    self.record_branch(26, branch_coverage_quantile)
                     func(
                         out[i],
                         values=vals[i],
@@ -4408,13 +4420,13 @@ class GroupBy(BaseGroupBy[NDFrameT]):
                     )
     
             if vals.ndim == 1:
-                self.record_branch(27)
+                self.record_branch(27, branch_coverage_quantile)
                 out = out.ravel("K")
                 if result_mask is not None:
-                    self.record_branch(28)
+                    self.record_branch(28, branch_coverage_quantile)
                     result_mask = result_mask.ravel("K")
             else:
-                self.record_branch(29)
+                self.record_branch(29, branch_coverage_quantile)
                 out = out.reshape(ncols, ngroups * nqs)
     
             return post_processor(out, inference, result_mask, orig_vals)
@@ -4422,7 +4434,7 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         res_mgr = sdata._mgr.grouped_reduce(blk_func)
         res = self._wrap_agged_manager(res_mgr)
         
-        self.record_branch(30)  # Final return branch
+        self.record_branch(30, branch_coverage_quantile)  # Final return branch
         return self._wrap_aggregated_output(res, qs=pass_qs)
 
 

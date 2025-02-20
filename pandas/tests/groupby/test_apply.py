@@ -4,7 +4,7 @@ from datetime import (
 )
 
 import numpy as np
-import pytest
+import pytest, atexit
 
 import pandas as pd
 from pandas import (
@@ -16,7 +16,10 @@ from pandas import (
 )
 import pandas._testing as tm
 from pandas.tests.groupby import get_groupby_method_args
+from pandas.core.groupby.groupby import branch_coverage_apply
+from pandas.tests.config import coverage_wrapper
 
+atexit.register(coverage_wrapper(branch_coverage_apply))
 
 def test_apply_func_that_appends_group_to_list_without_copy():
     # GH: 17718
