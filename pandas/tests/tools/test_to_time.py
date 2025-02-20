@@ -68,3 +68,26 @@ class TestToTime:
         res = to_time(np.array(arg))
         assert isinstance(res, list)
         assert res == expected_arr
+
+    # EXTENDED COVERAGE TEST CASES
+    def test_None_arg(self):
+        """Tests that arg=None, returns `None`. """
+        arg = None
+        assert to_time(arg) == arg
+
+    def test_time_arg(self):
+        """Tests that for arg of datetime.time object type, arg is returned."""
+        arg = time(14,15)
+        assert to_time(arg) == arg
+
+    def test_matrix_arg(self):
+        """Tests for expected TypeError when arg is a multidim numpy array."""
+        arg = np.array([[1,3,4],[1,2,4]])
+        msg = "arg must be a string, datetime, list, tuple, 1-d array, or Series"
+        with pytest.raises(TypeError, match=msg):
+            to_time(arg, format="%I:%M%p", errors="raise")
+
+    def test_coerce_error(self):
+        """Tests that with errors='coerce', ValueError is suppressed and None is returned for unparsable input string."""
+        arg = "14.15"
+        assert to_time(arg,format=None,errors='coerce') == None
