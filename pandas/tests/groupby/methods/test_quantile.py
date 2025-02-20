@@ -41,7 +41,7 @@ def test_quantile_single_row_group():
     grouped = df.groupby("group")
     result = grouped["value"].quantile(0.5)
 
-    expected = pd.Series([10, 25], index=["A", "B"])
+    expected = pd.Series([10.0, 25.0], index=["A", "B"])
     assert result.equals(expected)
 
 def test_quantile_large_dataframe():
@@ -63,7 +63,7 @@ def test_quantile_all_zeroes():
     grouped = df.groupby("group")
     result = grouped["value"].quantile(0.5)
 
-    expected = pd.Series([0, 0], index=["A", "B"])
+    expected = pd.Series([0.0, 0.0], index=["A", "B"])
     assert result.equals(expected)
 
 def test_quantile_multiindex_unbalanced_groups():
