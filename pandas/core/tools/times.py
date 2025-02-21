@@ -100,47 +100,62 @@ def _convert_listlike(
     if infer_time_format and format is None:
         format = _guess_time_format_for_array(arg)
 
-    times: list[time | None] = []
-    if format is not None:
-        for element in arg:
-            try:
-                times.append(datetime.strptime(element, format).time())
-            except (ValueError, TypeError) as err:
-                if errors == "raise":
-                    msg = (
-                        f"Cannot convert {element} to a time with given "
-                        f"format {format}"
-                    )
-                    raise ValueError(msg) from err
-                times.append(None)
-    else:
-        formats = _time_formats[:]
-        format_found = False
-        for element in arg:
-            time_object = None
-            try:
-                time_object = time.fromisoformat(element)
-            except (ValueError, TypeError):
-                for time_format in formats:
-                    try:
-                        time_object = datetime.strptime(element, time_format).time()
-                        if not format_found:
-                            # Put the found format in front
-                            fmt = formats.pop(formats.index(time_format))
-                            formats.insert(0, fmt)
-                            format_found = True
-                        break
-                    except (ValueError, TypeError):
-                        continue
+    # Parse times
 
-            if time_object is not None:
-                times.append(time_object)
-            elif errors == "raise":
-                raise ValueError(f"Cannot convert arg {arg} to a time")
-            else:
-                times.append(None)
+    if format is not None:
+        return _parse_with_format(arg, format, errors)
+    else:
+        return _infer_and_parse(arg,errors)
+
+
+def _parse_with_format(arg, format, errors):
+    """Given format info in input, parse and returns the time."""
+    times = []
+    for element in arg:
+        try:
+            times.append(datetime.strptime(element, format).time())
+        except (ValueError, TypeError) as err:
+            _handle_error(errors, element, format, err, times)
+    return times
+
+def _infer_and_parse(arg, errors):
+    """Lacking format info, infer format from _time_formats array. Parses and returns the time."""
+    formats = _time_formats[:]
+    format_found = False
+    times = []
+    
+    for element in arg:
+        time_object = _try_parse_time(element, formats, format_found)
+        
+        if time_object is not None:
+            times.append(time_object)
+        elif errors == "raise":
+            raise ValueError(f"Cannot convert arg {arg} to a time")
+        else:
+            times.append(None)
 
     return times
+
+def _try_parse_time(element, formats, format_found):
+    """Attempts parsing an element with different time formats."""
+    try:
+        return time.fromisoformat(element)
+    except (ValueError, TypeError):
+        for time_format in formats:
+            try:
+                parsed_time = datetime.strptime(element, time_format).time()
+                if not format_found:
+                    formats.insert(0, formats.pop(formats.index(time_format)))
+                return parsed_time
+            except (ValueError, TypeError):
+                continue
+    return None
+
+def _handle_error(errors, element, format, err, times):
+    """Handles errors when parsing times."""
+    if errors == "raise":
+        raise ValueError(f"Cannot convert {element} to a time with format {format}") from err
+    times.append(None)
 
 def _guess_time_format_for_array(arr):
     # Try to guess the format based on the first non-NaN element
