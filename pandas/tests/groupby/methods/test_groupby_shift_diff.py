@@ -1,5 +1,5 @@
 import numpy as np
-import pytest
+import pytest, atexit
 
 from pandas import (
     DataFrame,
@@ -10,7 +10,10 @@ from pandas import (
     date_range,
 )
 import pandas._testing as tm
+from pandas.core.groupby.groupby import branch_coverage_shift
+from pandas.tests.config import coverage_wrapper
 
+atexit.register(coverage_wrapper(branch_coverage_shift))
 
 def test_group_shift_with_null_key():
     # This test is designed to replicate the segfault in issue #13813.
