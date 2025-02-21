@@ -251,3 +251,39 @@ def test_group_shift_with_multiple_periods_and_both_fill_and_freq_deprecated():
     msg = "Passing a 'freq' together with a 'fill_value'"
     with pytest.raises(ValueError, match=msg):
         df.groupby("b")[["a"]].shift([1, 2], fill_value=1, freq="h")
+
+# 
+# Extended coverage for `shift`
+#
+def test_shift_into_empty():
+    df = DataFrame({
+        'group': ['Luleå', 'Stockholm'],
+        'value': [70, 120]
+    })
+    
+    with pytest.raises(ValueError, match="If `periods` is an iterable, it cannot be empty."):
+        df.groupby('group')['value'].shift([])
+
+def test_shift_invalid_periods_type():
+    df = DataFrame({'group': ['A'], 'value': [1]})
+
+    with pytest.raises(TypeError):
+        df.groupby('group')['value'].shift("one")
+
+def test_shift_into_empty():
+    df = DataFrame({
+        'group': ['Luleå', 'Stockholm'],
+        'value': [70, 120]
+    })
+    
+    with pytest.raises(ValueError, match="If `periods` is an iterable, it cannot be empty."):
+        df.groupby('group')['value'].shift([])
+
+def test_shift_using_invalid_period():
+    df = DataFrame({
+        'group': ['Luleå', 'Stockholm'],
+        'value': [70, 120]
+    })
+    
+    with pytest.raises(TypeError, match="Periods must be integer"):
+        df.groupby('group')['value'].shift(["hej"])
