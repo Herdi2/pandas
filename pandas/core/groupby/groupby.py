@@ -5062,46 +5062,7 @@ class GroupBy(BaseGroupBy[NDFrameT]):
                     f"Periods must be integer, but {period} is {type(period)}."
                 )
             period = cast(int, period)
-            if freq is not None:
-                self.record_branch(7, branch_coverage_shift)
-                f = lambda x: x.shift(
-                    period,
-                    freq,
-                    0,  # axis
-                    fill_value,
-                )
-                shifted = self._python_apply_general(
-                    f, self._selected_obj, is_transform=True
-                )
-            else:
-                self.record_branch(8, branch_coverage_shift)
-                
-                if fill_value is lib.no_default:
-                    self.record_branch(9, branch_coverage_shift)
-                    fill_value = None
-                ids = self._grouper.ids
-                ngroups = self._grouper.ngroups
-                res_indexer = np.zeros(len(ids), dtype=np.int64)
-
-                libgroupby.group_shift_indexer(res_indexer, ids, ngroups, period)
-
-                obj = self._obj_with_exclusions
-
-                shifted = obj._reindex_with_indexers(
-                    {0: (obj.index, res_indexer)},
-                    fill_value=fill_value,
-                    allow_dups=True,
-                )
-
-            if add_suffix:
-                self.record_branch(10, branch_coverage_shift)
-                
-                if isinstance(shifted, Series):
-                    self.record_branch(11, branch_coverage_shift)
-                    shifted = cast(NDFrameT, shifted.to_frame())
-                shifted = shifted.add_suffix(
-                    f"{suffix}_{period}" if suffix else f"_{period}"
-                )
+            shifted = self._do_shift(freq, period, add_suffix, suffix, fill_value)
             shifted_dataframes.append(cast(Union[Series, DataFrame], shifted))
 
         if len(shifted_dataframes) == 1:
@@ -5111,6 +5072,50 @@ class GroupBy(BaseGroupBy[NDFrameT]):
             self.record_branch(13, branch_coverage_shift)
             return concat(shifted_dataframes, axis=1)
 
+
+    def _do_shift(self, freq, period, add_suffix, suffix, fill_value):
+        if freq is not None:
+            self.record_branch(7, branch_coverage_shift)
+            f = lambda x: x.shift(
+                period,
+                freq,
+                0,  # axis
+                fill_value,
+            )
+            shifted = self._python_apply_general(
+                f, self._selected_obj, is_transform=True
+            )
+        else:
+            self.record_branch(8, branch_coverage_shift)
+            
+            if fill_value is lib.no_default:
+                self.record_branch(9, branch_coverage_shift)
+                fill_value = None
+            ids = self._grouper.ids
+            ngroups = self._grouper.ngroups
+            res_indexer = np.zeros(len(ids), dtype=np.int64)
+
+            libgroupby.group_shift_indexer(res_indexer, ids, ngroups, period)
+
+            obj = self._obj_with_exclusions
+
+            shifted = obj._reindex_with_indexers(
+                {0: (obj.index, res_indexer)},
+                fill_value=fill_value,
+                allow_dups=True,
+            )
+
+        if add_suffix:
+            self.record_branch(10, branch_coverage_shift)
+            
+            if isinstance(shifted, Series):
+                self.record_branch(11, branch_coverage_shift)
+                shifted = cast(NDFrameT, shifted.to_frame())
+            shifted = shifted.add_suffix(
+                f"{suffix}_{period}" if suffix else f"_{period}"
+            )
+        return shifted
+    
     @final
     @Substitution(name="groupby")
     @Substitution(see_also=_common_see_also)
