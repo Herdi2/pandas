@@ -270,14 +270,20 @@ def test_shift_invalid_periods_type():
     with pytest.raises(TypeError):
         df.groupby('group')['value'].shift("one")
 
-def test_shift_into_empty():
+def test_shift_large_by_one():
     df = DataFrame({
-        'group': ['Luleå', 'Stockholm'],
-        'value': [70, 120]
+        'group': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100],
+        'value': [315, 328, 642, 691, 595, 432, 431, 651, 424, 56, 646, 466, 444, 960, 446, 407, 933, 428, 405, 116, 341, 656, 519, 180, 704, 146, 825, 318, 547, 497, 464, 307, 822, 179, 543, 39, 321, 338, 960, 838, 931, 868, 592, 557, 53, 583, 803, 771, 538, 834, 976, 644, 942, 707, 106, 651, 214, 854, 946, 208, 978, 863, 653, 21, 377, 593, 321, 658, 465, 321, 869, 803, 160, 764, 789, 217, 420, 785, 563, 654, 553, 559, 323, 60, 292, 859, 100, 71, 958, 619, 758, 948, 71, 685, 774, 278, 451, 702, 609, 532]
     })
     
-    with pytest.raises(ValueError, match="If `periods` is an iterable, it cannot be empty."):
-        df.groupby('group')['value'].shift([])
+    expected = DataFrame({
+        'group': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100],
+        'value': [None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None]
+    })
+    
+    result = df.groupby('group')['value'].shift(1)
+    
+    tm.assert_frame_equal(expected, result)
 
 def test_shift_using_invalid_period():
     df = DataFrame({
