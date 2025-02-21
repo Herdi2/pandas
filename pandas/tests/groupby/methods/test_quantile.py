@@ -15,6 +15,36 @@ from pandas.tests.config import coverage_wrapper
 # from pandas.core.groupby.groupby import branch_coverage 
 atexit.register(coverage_wrapper(branch_coverage_quantile))
 
+def test_quantile_extensionarray_int():
+    """Ensure quantile works correctly with an integer ExtensionArray."""
+    from pandas.arrays import IntegerArray
+
+    df = pd.DataFrame({
+        "group": ["A", "A", "B", "B"],
+        "value": IntegerArray([10, 20, None, 30])
+    })
+
+    grouped = df.groupby("group")
+    result = grouped["value"].quantile(0.5)
+
+    expected = pd.Series([15.0, 30.0], index=["A", "B"], dtype="Float64")
+    assert result.equals(expected)
+
+def test_quantile_extensionarray_float():
+    """Ensure quantile works correctly with a float ExtensionArray."""
+    from pandas.arrays import FloatingArray
+
+    df = pd.DataFrame({
+        "group": ["A", "A", "B", "B"],
+        "value": FloatingArray([10.5, 20.3, None, 40.1])
+    })
+
+    grouped = df.groupby("group")
+    result = grouped["value"].quantile(0.5)
+
+    expected = pd.Series([15.4, 40.1], index=["A", "B"], dtype="Float64")
+    assert result.equals(expected)
+
 def test_quantile_mixed_dtypes():
     """Ensure quantile works correctly with a mix of integer and float values in the same group."""
     df = pd.DataFrame({
