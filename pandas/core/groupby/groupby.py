@@ -4931,7 +4931,10 @@ class GroupBy(BaseGroupBy[NDFrameT]):
         return self._cython_transform(
             "cummax", numeric_only=numeric_only, skipna=skipna
         )
-        
+    def _shift_with_frequency(self, period, freq, fill_value):
+        shift_func = lambda x: x.shift(period, freq, axis=0, fill_value=fill_value)
+        return self._python_apply_general(shift_func, self._selected_obj, is_transform=True)
+
     @final
     @Substitution(name="groupby")
     def shift(
@@ -5052,15 +5055,7 @@ class GroupBy(BaseGroupBy[NDFrameT]):
             period = cast(int, period)
             if freq is not None:
                 self.record_branch(8, branch_coverage_shift)
-                f = lambda x: x.shift(
-                    period,
-                    freq,
-                    0,  # axis
-                    fill_value,
-                )
-                shifted = self._python_apply_general(
-                    f, self._selected_obj, is_transform=True
-                )
+                shifted = self._shift_with_frequency(period, freq, fill_value)
             else:
                 self.record_branch(9, branch_coverage_shift)
                 
