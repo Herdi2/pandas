@@ -37,7 +37,7 @@ from libc.time cimport (
     strftime,
     tm,
 )
-
+from pandas._libs.tslibs.parsing import parse_time_string
 from pandas._libs.tslibs.dtypes cimport c_OFFSET_TO_PERIOD_FREQSTR
 
 from pandas._libs.tslibs.np_datetime import OutOfBoundsDatetime
@@ -2895,7 +2895,12 @@ class Period(_Period):
         # ('min', 5) but may be passed in as a string like '5min'
 
         # ordinal is the period offset from the gregorian proleptic epoch
-
+        
+        if isinstance(value, str):
+            parsed = parse_time_string(value, freq)
+            if parsed is not None:
+                return parsed  # Use the parsed Period range if matched
+        
         if freq is not None:
             freq = cls._maybe_convert_freq(freq)
             try:

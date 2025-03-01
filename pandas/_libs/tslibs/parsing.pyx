@@ -4,6 +4,7 @@ Parsing functions for datetime and datetime-like strings.
 import re
 import time
 import warnings
+import pandas as pd 
 
 from pandas.util._exceptions import find_stack_level
 
@@ -15,7 +16,8 @@ from cpython.datetime cimport (
     tzinfo,
 )
 
-from datetime import timezone
+from datetime import timezone, datetime
+
 
 from cpython.unicode cimport PyUnicode_AsUTF8AndSize
 from cython cimport Py_ssize_t
@@ -754,6 +756,59 @@ cdef _find_subsecond_reso(str timestr, int64_t* nanos):
         else:
             reso = "microsecond"
     return reso
+
+
+# Parsing for iso_ordinal date, multi-year period, quarter-based multi-year period, and multi-week period
+# ----------------------------------------------------------------------
+def parse_time_string(time_str, freq=None):
+    """
+    Extended parsing logic to handle:
+    1. ISO 8601 ordinal dates (e.g., "1981-095").
+    2. Multi-year spans (e.g., "2019-2021").
+    3. Multi-quarter spans (e.g., "2019Q1-2021Q4").
+    """
+
+    # Handle ISO 8601 Ordinal Dates (YYYY-DDD)
+    ordinal_match = re.match(r"^(\d{4})-(\d{3})$", time_str)
+
+    # Handle Multi-Year Spans (e.g., "2019-2021")
+    multi_year_match = re.match(r"^(\d{4})-(\d{4})$", time_str)
+
+    # Handle Multi-Quarter Spans (e.g., "2019Q1-2021Q4")
+    multi_quarter_match = re.match(r"^(\d{4}Q[1-4])-(\d{4}Q[1-4])$", time_str)
+
+    # Handle Week Start-End Format (YYYYMMDD-YYYYMMDD)
+    week_match = re.match(r"^(\d{8})-(\d{8})$", time_str)
+
+
+    if ordinal_match:
+        try:
+            year, day_of_year = map(int, ordinal_match.groups())
+            return pd.Period(pd.Timestamp(f"{year}-01-01") + pd.Timedelta(days=day_of_year - 1), freq="D")
+        except ValueError:
+            return None  # Invalid ordinal date
+
+    elif multi_year_match:
+        start_year, end_year = map(int, multi_year_match.groups())
+        if start_year <= end_year:  # Ensure valid range
+            return pd.period_range(start=f"{start_year}", end=f"{end_year}", freq="Y")
+        return None  # Invalid range
+
+    elif multi_quarter_match:
+        start_q, end_q = multi_quarter_match.groups()
+        return pd.period_range(start=start_q, end=end_q, freq="Q")
+
+    elif week_match:
+        start_date, end_date = week_match.groups()
+        start = pd.Timestamp(start_date)
+        end = pd.Timestamp(end_date)
+
+        # Ensure the range actually covers a full week (7 days)
+        if (end - start).days == 6:
+            return pd.Period(start, freq="W")
+
+
+    return None  # No match found
 
 
 # ----------------------------------------------------------------------
