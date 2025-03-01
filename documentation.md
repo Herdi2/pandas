@@ -54,7 +54,7 @@ The **implementation, testing, and validation** of the new formats and fixes wer
 ##### **Coverage and Final Validation**
 - The **testing team** analyzed:
   - **Test coverage**, ensuring that **key execution paths** were tested.
-  - Re-ran the **full test suite** with `pytest --cov` to verify coverage levels.
+  - Re-ran the **full test suite** to verify coverage levels.
 
 ---
 
