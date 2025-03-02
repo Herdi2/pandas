@@ -2899,7 +2899,7 @@ class Period(_Period):
         if isinstance(value, str):
             parsed = parse_time_string(value, freq)
             if parsed is not None:
-                return parsed  # Use the parsed Period range if matched
+                value = parsed  # Use the parsed Period range if matched
         
         if freq is not None:
             freq = cls._maybe_convert_freq(freq)
