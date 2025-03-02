@@ -2896,10 +2896,10 @@ class Period(_Period):
 
         # ordinal is the period offset from the gregorian proleptic epoch
         
-        if isinstance(value, str):
-            parsed = parse_time_string(value, freq)
-            if parsed is not None:
-                return parsed  # Use the parsed Period range if matched
+        # if isinstance(value, str):
+        #     parsed = parse_time_string(value, freq)
+        #     if parsed is not None:
+        #         return parsed  # Use the parsed Period range if matched
         
         if freq is not None:
             freq = cls._maybe_convert_freq(freq)
