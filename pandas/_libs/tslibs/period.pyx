@@ -2963,20 +2963,14 @@ class Period(_Period):
 
                 value = str(value)
             value = value.upper()
-
             freqstr = freq.rule_code if freq is not None else None
-            try:
-                dt, reso = parse_datetime_string_with_reso(value, freqstr)
-            except ValueError as err:
-                match = re.search(r"^\d{4}-\d{2}-\d{2}/\d{4}-\d{2}-\d{2}", value)
-                if match:
-                    # Case that cannot be parsed (correctly) by our datetime
-                    #  parsing logic
-                    dt, freq = _parse_weekly_str(value, freq)
-                else:
-                    raise err
 
+            if re.search(r"^\d{4}-\d{1,2}-\d{1,2}/\d{4}-\d{1,2}-\d{1,2}", value):
+                # Case that cannot be parsed (correctly) by our datetime
+                # parsing logic
+                dt, freq = _parse_weekly_str(value, freq)
             else:
+                dt, reso = parse_datetime_string_with_reso(value, freqstr)
                 if reso == "nanosecond":
                     nanosecond = dt.nanosecond
                 if dt is NaT:
