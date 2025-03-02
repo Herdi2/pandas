@@ -784,7 +784,7 @@ def parse_time_string(time_str, freq=None):
     if ordinal_match:
         try:
             year, day_of_year = map(int, ordinal_match.groups())
-            return pd.Period(pd.Timestamp(f"{year}-01-01") + pd.Timedelta(days=day_of_year - 1), freq="D")
+            return pd.Period(pd.Timestamp(f"{year}-01-01") + pd.Timedelta(days=day_of_year - 1), freq=freq)
         except ValueError:
             return None  # Invalid ordinal date
 
