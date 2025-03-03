@@ -1,5 +1,5 @@
 import re
-
+import datetime
 cimport numpy as cnp
 from cpython.object cimport (
     Py_EQ,
@@ -2896,10 +2896,16 @@ class Period(_Period):
 
         # ordinal is the period offset from the gregorian proleptic epoch
         
-        # if isinstance(value, str):
-        #     parsed = parse_time_string(value, freq)
-        #     if parsed is not None:
-        #         return parsed  # Use the parsed Period range if matched
+        if isinstance(value, str):
+            # Pre-processing for ISO8601 ordinals
+            # Converts `yyyy-dd` or `yyyydd` to `yyyy-mm-dd`
+            # for the parser to then handle as usual
+            match = re.search(r"^(\d{4}-?\d{1,3})(.*)$", value)
+            if match:
+                date, rest = match.groups()
+                formatting = "%Y-%j" if '-' in date else "%Y%j"
+                processed_date = datetime.strptime(date, formatting).strftime("%Y-%m-%d")
+                value = processed_date + rest
         
         if freq is not None:
             freq = cls._maybe_convert_freq(freq)
