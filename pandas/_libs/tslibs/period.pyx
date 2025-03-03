@@ -2898,9 +2898,9 @@ class Period(_Period):
         
         if isinstance(value, str):
             # Pre-processing for ISO8601 ordinals
-            # Converts `yyyy-dd` or `yyyydd` to `yyyy-mm-dd`
+            # Converts `yyyy-ddd` or `yyyyddd` to `yyyy-mm-dd`
             # for the parser to then handle as usual
-            match = re.search(r"^(\d{4}-?\d{1,3})(.*)$", value)
+            match = re.search(r"^(\d{4}-?\d{3} )(.*)$", value)
             if match:
                 date, rest = match.groups()
                 formatting = "%Y-%j" if '-' in date else "%Y%j"
