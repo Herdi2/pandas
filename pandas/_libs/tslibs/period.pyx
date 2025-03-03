@@ -37,7 +37,7 @@ from libc.time cimport (
     strftime,
     tm,
 )
-from pandas._libs.tslibs.parsing import parse_time_string
+from pandas._libs.tslibs.parsing import parse_multiyear
 from pandas._libs.tslibs.dtypes cimport c_OFFSET_TO_PERIOD_FREQSTR
 
 from pandas._libs.tslibs.np_datetime import OutOfBoundsDatetime
@@ -2970,8 +2970,12 @@ class Period(_Period):
                 value = str(value)
             value = value.upper()
             freqstr = freq.rule_code if freq is not None else None
-
-            if re.search(r"^\d{4}-\d{1,2}-\d{1,2}/\d{4}-\d{1,2}-\d{1,2}", value):
+            
+            # Parse multiyear spans
+            multiyear = parse_multiyear(value, freq)
+            if multiyear is not None:
+                return multiyear
+            elif re.search(r"^\d{4}-\d{1,2}-\d{1,2}/\d{4}-\d{1,2}-\d{1,2}", value):
                 # Case that cannot be parsed (correctly) by our datetime
                 # parsing logic
                 dt, freq = _parse_weekly_str(value, freq)
