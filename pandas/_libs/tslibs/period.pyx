@@ -2900,12 +2900,12 @@ class Period(_Period):
             # Pre-processing for ISO8601 ordinals
             # Converts `yyyy-ddd` or `yyyyddd` to `yyyy-mm-dd`
             # for the parser to then handle as usual
-            match = re.search(r"^(\d{4}-?\d{3} )(.*)$", value)
+            match = re.search(r"^(\d{4}-?\d{3})( .+)?$", value)
             if match:
                 date, rest = match.groups()
                 formatting = "%Y-%j" if '-' in date else "%Y%j"
                 processed_date = datetime.strptime(date, formatting).strftime("%Y-%m-%d")
-                value = processed_date + rest
+                value = processed_date + (rest if rest is not None else "")
         
         if freq is not None:
             freq = cls._maybe_convert_freq(freq)
