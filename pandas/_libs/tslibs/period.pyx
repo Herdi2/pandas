@@ -2975,9 +2975,11 @@ class Period(_Period):
             multiyear = parse_multiyear(value, freq)
             if multiyear is not None:
                 return multiyear
-            elif re.search(r"^\d{4}-\d{1,2}-\d{1,2}/\d{4}-\d{1,2}-\d{1,2}", value):
+            elif re.search(r"^\d{4}-\d{1,2}-\d{1,2}/\d{4}-\d{1,2}-\d{1,2}", value) or re.search(r"^\d{8}-\d{8}", value):
                 # Case that cannot be parsed (correctly) by our datetime
                 # parsing logic
+                # 1. `yyyy-mm-dd/yyyy-mm-dd`
+                # 2. `yyyymmdd-yyyymmdd`
                 dt, freq = _parse_weekly_str(value, freq)
             else:
                 dt, reso = parse_datetime_string_with_reso(value, freqstr)
@@ -3072,7 +3074,7 @@ cdef _parse_weekly_str(value, BaseOffset freq):
     Period.__str__ with weekly freq.
     """
     # GH#50803
-    start, end = value.split("/")
+    start, end = value.split("/") if '/' in value else value.split("-")
     start = Timestamp(start)
     end = Timestamp(end)
 
