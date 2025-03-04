@@ -2896,6 +2896,7 @@ class Period(_Period):
 
         # ordinal is the period offset from the gregorian proleptic epoch
         
+        # GHF#2
         if isinstance(value, str):
             # Pre-processing for ISO8601 ordinals
             # Converts `yyyy-ddd` or `yyyyddd` to `yyyy-mm-dd`
@@ -2972,10 +2973,12 @@ class Period(_Period):
             freqstr = freq.rule_code if freq is not None else None
             
             # Parse multiyear spans
+            # GHF#4
             multiyear = parse_multiyear(value, freq)
             if multiyear is not None:
                 return multiyear
             elif re.search(r"^\d{4}-\d{1,2}-\d{1,2}/\d{4}-\d{1,2}-\d{1,2}", value) or re.search(r"^\d{8}-\d{8}", value):
+                # GHF#3
                 # Case that cannot be parsed (correctly) by our datetime
                 # parsing logic
                 # 1. `yyyy-mm-dd/yyyy-mm-dd`
@@ -3074,6 +3077,7 @@ cdef _parse_weekly_str(value, BaseOffset freq):
     Period.__str__ with weekly freq.
     """
     # GH#50803
+    # GHF#2
     start, end = value.split("/") if '/' in value else value.split("-")
     start = Timestamp(start)
     end = Timestamp(end)

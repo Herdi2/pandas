@@ -760,6 +760,7 @@ cdef _find_subsecond_reso(str timestr, int64_t* nanos):
 
 # ----------------------------------------------------------------------
 # Parsing for year-based multi-year period and quarter-based multi-year period
+# GHF#4
 def parse_multiyear(time_str, freq=None):
     """
     Extended parsing logic to handle:
