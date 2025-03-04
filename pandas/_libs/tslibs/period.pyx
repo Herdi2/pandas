@@ -1,5 +1,5 @@
 import re
-
+import datetime
 cimport numpy as cnp
 from cpython.object cimport (
     Py_EQ,
@@ -37,7 +37,7 @@ from libc.time cimport (
     strftime,
     tm,
 )
-from pandas._libs.tslibs.parsing import parse_time_string
+from pandas._libs.tslibs.parsing import parse_multiyear
 from pandas._libs.tslibs.dtypes cimport c_OFFSET_TO_PERIOD_FREQSTR
 
 from pandas._libs.tslibs.np_datetime import OutOfBoundsDatetime
@@ -2896,10 +2896,17 @@ class Period(_Period):
 
         # ordinal is the period offset from the gregorian proleptic epoch
         
+        # GHF#2
         if isinstance(value, str):
-            parsed = parse_time_string(value, freq)
-            if parsed is not None:
-                return parsed  # Use the parsed Period range if matched
+            # Pre-processing for ISO8601 ordinals
+            # Converts `yyyy-ddd` or `yyyyddd` to `yyyy-mm-dd`
+            # for the parser to then handle as usual
+            match = re.search(r"^(\d{4}-?\d{3})( .+)?$", value)
+            if match:
+                date, rest = match.groups()
+                formatting = "%Y-%j" if '-' in date else "%Y%j"
+                processed_date = datetime.strptime(date, formatting).strftime("%Y-%m-%d")
+                value = processed_date + (rest if rest is not None else "")
         
         if freq is not None:
             freq = cls._maybe_convert_freq(freq)
@@ -2963,20 +2970,22 @@ class Period(_Period):
 
                 value = str(value)
             value = value.upper()
-
             freqstr = freq.rule_code if freq is not None else None
-            try:
-                dt, reso = parse_datetime_string_with_reso(value, freqstr)
-            except ValueError as err:
-                match = re.search(r"^\d{4}-\d{2}-\d{2}/\d{4}-\d{2}-\d{2}", value)
-                if match:
-                    # Case that cannot be parsed (correctly) by our datetime
-                    #  parsing logic
-                    dt, freq = _parse_weekly_str(value, freq)
-                else:
-                    raise err
-
+            
+            # Parse multiyear spans
+            # GHF#4
+            multiyear = parse_multiyear(value, freq)
+            if multiyear is not None:
+                return multiyear
+            elif re.search(r"^\d{4}-\d{1,2}-\d{1,2}/\d{4}-\d{1,2}-\d{1,2}", value) or re.search(r"^\d{8}-\d{8}", value):
+                # GHF#3
+                # Case that cannot be parsed (correctly) by our datetime
+                # parsing logic
+                # 1. `yyyy-mm-dd/yyyy-mm-dd`
+                # 2. `yyyymmdd-yyyymmdd`
+                dt, freq = _parse_weekly_str(value, freq)
             else:
+                dt, reso = parse_datetime_string_with_reso(value, freqstr)
                 if reso == "nanosecond":
                     nanosecond = dt.nanosecond
                 if dt is NaT:
@@ -3068,7 +3077,8 @@ cdef _parse_weekly_str(value, BaseOffset freq):
     Period.__str__ with weekly freq.
     """
     # GH#50803
-    start, end = value.split("/")
+    # GHF#2
+    start, end = value.split("/") if '/' in value else value.split("-")
     start = Timestamp(start)
     end = Timestamp(end)
 
