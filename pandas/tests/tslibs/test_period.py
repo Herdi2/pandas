@@ -1,5 +1,7 @@
 import numpy as np
 import pytest
+import pandas as pd
+from datetime import datetime
 
 from pandas._libs.tslibs import (
     iNaT,
@@ -121,3 +123,108 @@ def test_get_period_field_array_raises_on_out_of_range():
     msg = "Buffer dtype mismatch, expected 'const int64_t' but got 'double'"
     with pytest.raises(ValueError, match=msg):
         get_period_field_arr(-1, np.empty(1), 0)
+
+# 10 test cases for ordinal dates
+@pytest.mark.parametrize(
+    "ordinal_str,expected_date_str",
+    [
+        # Basic ordinal date tests
+        ("2022-001", "2022-01-01"),  # First day of year
+        ("2022-032", "2022-02-01"),  # February 1
+        ("2022-219", "2022-08-07"),  # August 7 (from row 6)
+        ("2022-365", "2022-12-31"),  # Last day of common year
+        
+        # Leap year tests
+        ("2020-060", "2020-02-29"),  # Feb 29 in leap year
+        ("2020-366", "2020-12-31"),  # Last day of leap year
+        
+        # 24th century ordinal dates
+        ("2300-180", "2300-06-29"),  # Mid-year in 24th century
+        ("2320-001", "2320-01-01"),  # First day of 2320
+        ("2400-060", "2400-02-29"),  # Feb 29 in leap year (div by 400)
+        ("2400-366", "2400-12-31"),  # Last day of leap year 2400
+    ],
+)
+def test_period_with_ordinal_dates(ordinal_str, expected_date_str):
+    """Test that Period constructor can parse ISO 8601 ordinal dates."""
+    # Create Period with ordinal date string
+    period = pd.Period(ordinal_str)
+    
+    # Convert expected date string to datetime for comparison
+    expected_date = datetime.strptime(expected_date_str, "%Y-%m-%d")
+    
+    # Verify date is correctly parsed
+    assert period.year == expected_date.year, f"Year mismatch for {ordinal_str}"
+    assert period.month == expected_date.month, f"Month mismatch for {ordinal_str}"
+    assert period.day == expected_date.day, f"Day mismatch for {ordinal_str}"
+    
+    # Verify default frequency is daily
+    assert period.freqstr == "D"
+
+
+# 10 test cases for 24th century weeks
+@pytest.mark.parametrize(
+    "week_str,expected_start_date",
+    [
+        # 24th century weekly tests
+        ("2301-01-01/2301-01-07", "2301-01-01"),  # First week of 24th century
+        ("2350-06-25/2350-07-01", "2350-06-25"),  # Mid-24th century
+        ("2399-12-25/2399-12-31", "2399-12-25"),  # Last week of 24th century
+        
+        # Week crossing years in future centuries
+        ("2361-12-31/2362-01-06", "2361-12-31"),  # Week crossing years
+        ("2481-12-29/2482-01-04", "2481-12-29"),  # Week from row 73
+        
+        # Problem cases from the issue table
+        ("2061-12-26/2062-01-01", "2061-12-26"),  # Row 59
+        ("2181-12-31/2182-01-06", "2181-12-31"),  # Row 63
+        ("2272-01-01/2272-01-07", "2272-01-01"),  # Row 66
+        ("2362-01-01/2362-01-07", "2362-01-01"),  # Row 69
+        ("2452-01-01/2452-01-07", "2452-01-01"),  # Row 72
+    ],
+)
+def test_period_with_24th_century_weeks(week_str, expected_start_date):
+    """Test that Period constructor can handle week format strings in the 24th century."""
+    # Create Period with week string
+    period = pd.Period(week_str)
+    
+    # Verify date is correctly parsed
+    start_date = pd.Timestamp(expected_start_date)
+    assert period.year == start_date.year, f"Year mismatch for {week_str}"
+    assert period.month == start_date.month, f"Month mismatch for {week_str}"
+    assert period.day == start_date.day, f"Day mismatch for {week_str}"
+    
+    # Verify frequency is weekly
+    assert period.freqstr.startswith("W-"), f"Expected weekly frequency, got {period.freqstr}"
+    
+@pytest.mark.parametrize(
+    "problematic_year",
+    [
+        2060,  # 60s decade
+        2070,  # 70s decade
+        2080,  # 80s decade
+        2090,  # 90s decade
+        2172,  # > 21:59
+        2272,  # Specifically mentioned in issue (interpreted as 22:72)
+        2362,  # > 23:59
+        2400,  # 24:00 edge case
+        2482,  # From the specific example (24:82)
+    ]
+)
+def test_problematic_years_roundtrip(problematic_year):
+    """
+    Test string conversion for years that could be misinterpreted as hour:minute.
+    """
+    # 1. Create Period directly with the year
+    original = pd.Period(freq='W', year=problematic_year)
+    
+    # 2. Convert to string
+    period_str = str(original)
+    print(f"\nPeriod(freq='W', year={problematic_year}) -> '{period_str}'")
+    
+    # 3. Recreate from string 
+    # Previously, years like 2272 would be interpreted as 22:72 (hours:minutes) 
+    recreated = pd.Period(period_str)
+    
+    # 4. Verify the year is correct
+    assert recreated.year == problematic_year, f"Year mismatch: {recreated.year} != {problematic_year}"
