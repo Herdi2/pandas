@@ -231,3 +231,101 @@ def test_problematic_years_roundtrip(problematic_year):
     
     # 4. Verify the year is correct
     assert recreated.year == problematic_year, f"Year mismatch: {recreated.year} != {problematic_year}"
+
+
+@pytest.mark.parametrize(
+    "datestring,expected", # expected = [str,freqstr,start_time,end_time,day_of_week,week]
+    [   # basic input
+        ('20250106-20250112',['2025-01-06/2025-01-12', 'W-SUN', '2025-01-06 00:00:00', '2025-01-12 23:59:59.999999999', 6, 2]), # mon-sun 
+        # week turning over
+        ('20250101-20250107',['2025-01-01/2025-01-07', 'W-TUE', '2025-01-01 00:00:00', '2025-01-07 23:59:59.999999999', 1, 2]), # wed-tue
+        ('20250112-20250118',['2025-01-12/2025-01-18', 'W-SAT', '2025-01-12 00:00:00', '2025-01-18 23:59:59.999999999', 5, 3]), # sun-sat
+
+        # month turning over
+        ('20250228-20250306',['2025-02-28/2025-03-06', 'W-THU', '2025-02-28 00:00:00', '2025-03-06 23:59:59.999999999', 3, 10]), # fri-thur
+        ('20251125-20251201',['2025-11-25/2025-12-01', 'W-MON', '2025-11-25 00:00:00','2025-12-01 23:59:59.999999999', 0, 49]), # tue-mon
+
+        # year turning over
+        ('19991231-20000106', ['1999-12-31/2000-01-06', 'W-THU', '1999-12-31 00:00:00', '2000-01-06 23:59:59.999999999', 3, 1]), # fri-thur
+        ('20161229-20170104', ['2016-12-29/2017-01-04', 'W-WED', '2016-12-29 00:00:00', '2017-01-04 23:59:59.999999999', 2, 1]), # thur-wed
+        ('20121231-20130106', ['2012-12-31/2013-01-06', 'W-SUN', '2012-12-31 00:00:00', '2013-01-06 23:59:59.999999999', 6, 1]), # mon-sun 
+        # leap day
+        ('20240226-20240303', ['2024-02-26/2024-03-03', 'W-SUN', '2024-02-26 00:00:00', '2024-03-03 23:59:59.999999999', 6, 9]), # mon-sun
+    ],
+)
+def test_period_parse_weeks_positive(datestring,expected):
+    """
+    Tests correct attributes for Period objects created from the
+    dedicated YYYYMMDD-YYYYMMDD week format with valid inputs.
+    """
+    p = pd.Period(datestring)
+    assert str(p) == expected[0]
+    assert p.freqstr == expected[1]
+    assert str(p.start_time) == expected[2]
+    assert str(p.end_time) == expected[3]
+    assert p.day_of_week == expected[4]
+    assert p.week == expected[5]
+
+@pytest.mark.parametrize(
+    "datestring",
+    [   # basic input
+        '20250106-20250112', # mon-sun 
+        # week turning over
+        '20250101-20250107', # wed-tue
+        '20250112-20250118', # sun-sat
+
+        # month turning over
+        '20250228-20250306', # fri-thur
+        '20251125-20251201', # tue-mon
+
+        # year turning over
+        '19991231-20000106',
+        '20161229-20170104',
+        '20121231-20130106',
+    ],
+)
+def test_period_parse_weeks_equivalent(datestring):
+    """
+    Checks that string representation of objects created with the 
+    YYYYMMDD-YYYYMMDD format can successfully be fed back into Period
+    to create the equivalent week period.
+    """
+    p = pd.Period(datestring)
+    p_recreation = pd.Period(str(p))
+    assert p == p_recreation
+
+@pytest.mark.parametrize(
+    "datestring,expected",
+    [
+        # Same start and end date
+        ('20131231-20131231', ValueError),
+
+        # More or less than 7 days in span
+        ('20130101-20130104', ValueError),
+        ('20121231-20130102', ValueError),
+        ('20121231-20130131', ValueError),
+        # Inverse order
+
+        ('20120107-20120101', ValueError),
+        ('20120101-20111226', ValueError),
+
+        # Out of bounds dates
+        ('20250229-20250306', Exception),
+        ('20251229-20251306', Exception),
+
+        # Faulty formats
+        ('251229-260106', Exception), # Two-digit years representation
+        ('990303-990309', Exception), # Two-digit year representation
+        ('2000912-20010918', Exception), # Missing digits
+        ('20250106- 20250112', Exception) # Extra whitespace
+    ],
+)
+def test_period_parse_weeks_err(datestring,expected):
+    """
+    Checks that the expected errors are thrown when attempting to
+    create a Period objects from the string format YYYYMMDD-YYYYMMDD with
+    invalid inputs.
+    """
+    with pytest.raises(expected):
+        pd.Period(datestring)
+        
