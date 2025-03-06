@@ -405,3 +405,78 @@ def test_period_parse_weeks_retro(datestring,expected):
     assert p.day_of_week == expected[4]
     assert p.week == expected[5]
     
+@pytest.mark.parametrize(
+    "datestring, expected",
+    [
+        #Finland's independence
+        ("19171206-19171212", [3, 2]),# From Thursday to Wednesday
+        #Year turning over in 1960s
+        ("19681230-19690105", [0, 6]),#From Monday to Sunday
+        #Leap day in 1800s
+        ("18640225-18640302", [3, 2]),# From Thursday to Wednesday
+        #Leap day in 1900s
+        ("19800226-19800303", [1, 0]),# From Tuesday to Monday
+        #Decade switch in 1800s
+        ("18191230-18200105",[3, 2]),# Thursday to Wednesday
+        #Decade switch from 1940s to 1950s
+        ("19491228-19500103", [2, 1])# Wednesday Tuesday
+    ],
+)
+def test_old_and_retro_periods(datestring, expected):
+    p = pd.Period(datestring)
+    assert p.day_of_week[0] == expected[0]
+    assert p.day_of_week[6] == expected[1]
+    
+@pytest.mark.parametrize(
+    "datestring, expected",
+    [
+        # Period ends on same day as starts in 1960s
+        ("19600703-196003", ValueError)
+        # Incorrect formatted years parameters and in 1970s
+        ("1970-05-04-1970-05-02", ValueError)
+        
+    ],
+)
+def test_old_and_retro_periods_errors(datestring, expected):
+    with pytest.raises(expected):
+        pd.Period(datestring)
+
+
+
+@pytest.mark.parametrize(
+    "datestring,expected",
+    [
+        # Test year switch in 1960s
+        ("1960Q3-1961Q1", [[1960, 1960, 1961], [3, 4, 1], 'Q-DEC']),
+        # Test year switch in 1830s
+        ("1830Q1-1831Q2", [[1830, 1830, 1830, 1830, 1831, 1831], [1, 2, 3, 4, 1, 2], 'Q-DEC']),
+        # Test year switch in 1980s
+        ("1980Q4-1981Q3", [[1980, 1981, 1981, 1981], [4, 1, 2, 3], 'Q-DEC']),
+        # Test year switch in 1850s
+        ("1850Q2-1851Q1", [[1850, 1850, 1850, 1851], [2, 3, 4, 1], 'Q-DEC']),
+        # Test dacade switch in 1800s
+        ("1859Q2-1860Q1", [[1859, 1859, 1859, 1860], [2, 3, 4, 1], 'Q-DEC']),
+        # Test dacade switch in 1900s
+        ("1929Q3-1930Q2", [[1929, 1929, 1930, 1930], [3, 4, 1, 2], 'Q-DEC']),
+    ],
+)
+def test_period_parse_quarters_retro(datestring,expected):
+    p = pd.Period(datestring)
+    assert p.year.values == expected[0]# Test that year values match
+    assert p.quarterly.values == expected[1]# Test that quarter values match
+    assert p.freqstr == expected[2]# Check that the frequency 
+    
+@pytest.mark.parametrize(
+    "datestring,expected",
+    [
+        ("1970-1973", [[1970, 1971, 1972, 1973], 'Y-DEC']),
+        ("1867-1869", [[1867, 1868, 1869], 'Y-DEC']),
+        ("1849-1851", [[1849, 1850, 1851], 'Y-DEC']),
+        ("1959-1963", [[1959, 1960, 1961, 1962, 1963], 'Y-DEC']),
+        
+    ]
+)
+def test_period_parse_years_retro(datestring,expected):
+    p = pd.Period(datestring)
+    assert p.year.values == expected[0]# Test that year values match
+    assert p.freqstr == expected[1]# Check that the frequency 
