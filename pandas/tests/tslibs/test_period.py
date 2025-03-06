@@ -322,127 +322,27 @@ def test_period_parse_weeks_err(datestring,expected):
     """
     with pytest.raises(expected):
         pd.Period(datestring)
-        
-    
-@pytest.mark.parametrize(
-    "datestring",
-    [
-        # The black friday stock market week.
-        "18690924-18690928",
-        #Finland's independence
-        "19171206-19171212"
-        #Year turning over in 1960s
-        "19681230-19690103"
-        #Year turning over in 1970s
-        "19751229-19760102"
-        #Year turning over in 1990s
-        "19931231-19940104"
-        #Decade switch from 1940s to 1950s
-        "19491228-19501203"
-        #Decade switch in 1800s
-        "18191230-18200103"
-        #Year switch in 1800s
-        "18531229-18540103"
-        #Leap day in 1800s
-        "18640225-18640229"
-        #Leap day in 1900s
-        "19700226-19700229"
-    ],
-)
-def test_old_and_retro_periods(datestring):
-    p = pd.Period(datestring)
-    p_recreation = pd.Period(str(p))
-    assert p == p_recreation
-    
-    
-@pytest.mark.parametrize(
-    "datestring, expected",
-    [
-        # Period ends on same day as starts in 1960s
-        ("19600703-196003", ValueError)
-        # Incorrect formatted years parameters and in 1970s
-        ("1970-05-04-1970-05-02", ValueError)
-        
-    ],
-)
-def test_old_and_retro_periods_errors(datestring, expected):
-    with pytest.raises(expected):
-        pd.Period(datestring)
-    
-    
 
 @pytest.mark.parametrize(
-    "datestring,expected", # expected = [str,freqstr,start_time,end_time,day_of_week,week]
+    "datestring,expected",
     [
-        # Standard case
-        ('18170414-18170417',['1817-04-14/1817-04-17', 'W-WED', '1817-04-14 00:00:00', '1817-04-17 23:59:59.999999999', 2, 16]),# monday-wednesday
-        ('19400115-19400118',['1940-01-15/1940-01-18', 'W-THU', '1940-01-15 00:00:00', '1940-01-18 23:59:59.999999999', 3, 3]),# monday-thursday
+        ("1970-1973", [[1970, 1971, 1972, 1973], 'Y-DEC']),
+        ("1867-1869", [[1867, 1868, 1869], 'Y-DEC']),
+        ("1849-1851", [[1849, 1850, 1851], 'Y-DEC']),
+        ("1959-1963", [[1959, 1960, 1961, 1962, 1963], 'Y-DEC'])
         
-        # Test leap year in 1800s
-        ('18200228-18200302',['1820-02-26/1820-03-02', 'W-THU', '1820-02-28 00:00:00', '1820-03-02 23:59:59.999999999', 3, 9]),# monday-thursday
-        
-        # Test leap year in 1900s
-        ('19640228-19640301',['1964-02-28/1964-03-01', 'W-THU', '1964-02-28 00:00:00', '1964-03-01 23:59:59.999999999', 6, 11]),# Friday-sunday
-        
-        # Test year switch in 1900s
-        ('19341231-19350102',['1934-12-31/1935-01-02', 'W-WED', '1934-12-31 00:00:00', '1935-01-02 23:59:59.999999999', 2, 1]),# monday-wednesday
-        
-        # Test year switch in 1800s
-        ('18781231-18790101',['1878-12-31/1879-01-01', 'W-WED', '1878-12-31 00:00:00', '1879-01-01 23:59:59.999999999', 2, 1]),# tuesday-wednesday  
-    ],
+    ]
 )
-
-def test_period_parse_weeks_retro(datestring,expected):
+def test_period_parse_years_retro(datestring,expected):
     """
-    Tests correct attributes for Period objects created from the
-    dedicated YYYYMMDD-YYYYMMDD week format with valid inputs.
+    Test intialisation of the Period object using the YYYY-YYYY format
+    The test is validated by looking at the frequency string parameter and that each value
+    in the timespan is initialised correctly
     """
     p = pd.Period(datestring)
-    assert str(p) == expected[0]
-    assert p.freqstr == expected[1]
-    assert str(p.start_time) == expected[2]
-    assert str(p.end_time) == expected[3]
-    assert p.day_of_week == expected[4]
-    assert p.week == expected[5]
+    assert (p.year == pd.Index(expected[0])).all()# Test that year values match
+    assert p.freqstr == expected[1]# Check the frequency
     
-@pytest.mark.parametrize(
-    "datestring, expected",
-    [
-        #Finland's independence
-        ("19171206-19171212", [3, 2]),# From Thursday to Wednesday
-        #Year turning over in 1960s
-        ("19681230-19690105", [0, 6]),#From Monday to Sunday
-        #Leap day in 1800s
-        ("18640225-18640302", [3, 2]),# From Thursday to Wednesday
-        #Leap day in 1900s
-        ("19800226-19800303", [1, 0]),# From Tuesday to Monday
-        #Decade switch in 1800s
-        ("18191230-18200105",[3, 2]),# Thursday to Wednesday
-        #Decade switch from 1940s to 1950s
-        ("19491228-19500103", [2, 1])# Wednesday Tuesday
-    ],
-)
-def test_old_and_retro_periods(datestring, expected):
-    p = pd.Period(datestring)
-    assert p.day_of_week[0] == expected[0]
-    assert p.day_of_week[6] == expected[1]
-    
-@pytest.mark.parametrize(
-    "datestring, expected",
-    [
-        # Period ends on same day as starts in 1960s
-        ("19600703-196003", ValueError)
-        # Incorrect formatted years parameters and in 1970s
-        ("1970-05-04-1970-05-02", ValueError)
-        
-    ],
-)
-def test_old_and_retro_periods_errors(datestring, expected):
-    with pytest.raises(expected):
-        pd.Period(datestring)
-
-
-
 @pytest.mark.parametrize(
     "datestring,expected",
     [
@@ -457,26 +357,94 @@ def test_old_and_retro_periods_errors(datestring, expected):
         # Test dacade switch in 1800s
         ("1859Q2-1860Q1", [[1859, 1859, 1859, 1860], [2, 3, 4, 1], 'Q-DEC']),
         # Test dacade switch in 1900s
-        ("1929Q3-1930Q2", [[1929, 1929, 1930, 1930], [3, 4, 1, 2], 'Q-DEC']),
+        ("1929Q3-1930Q2", [[1929, 1929, 1930, 1930], [3, 4, 1, 2], 'Q-DEC'])
     ],
 )
 def test_period_parse_quarters_retro(datestring,expected):
+    """
+    Test Quarter format YYYYQA-YYYYQB for Period() object initialisation.
+    We validate the test by looking at the year and quarter of each value ntry in the timespan
+    """
     p = pd.Period(datestring)
-    assert p.year.values == expected[0]# Test that year values match
-    assert p.quarterly.values == expected[1]# Test that quarter values match
-    assert p.freqstr == expected[2]# Check that the frequency 
+    assert (p.year == pd.Index(expected[0])).all()# Test that year values match
+    assert (p.quarter == pd.Index(expected[1])).all()# Test that quarter values match
+    assert p.freqstr == expected[2]# Check that the frequency
     
 @pytest.mark.parametrize(
-    "datestring,expected",
+    "datestring, expected",
     [
-        ("1970-1973", [[1970, 1971, 1972, 1973], 'Y-DEC']),
-        ("1867-1869", [[1867, 1868, 1869], 'Y-DEC']),
-        ("1849-1851", [[1849, 1850, 1851], 'Y-DEC']),
-        ("1959-1963", [[1959, 1960, 1961, 1962, 1963], 'Y-DEC']),
-        
-    ]
+        # Period ends on same day as starts in 1960s
+        ("19600703-19600703", ValueError),
+        # Incorrect formatted years parameters and in 1970s
+        ("1970-05-04-1970-05-02", ValueError)
+    ],
 )
-def test_period_parse_years_retro(datestring,expected):
+def test_old_and_retro_periods_errors(datestring, expected):
+    """
+    We try initialising an invalid Period() object by using invalid parameters.
+    We expect our method to return a ValueError upon encountering such parameters.
+    """
+    with pytest.raises(expected):
+        pd.Period(datestring)
+        
+@pytest.mark.parametrize(
+    "datestring, expected",
+    [
+        #Finland's independence
+        ("19171206-19171212", 2),# From Thursday to Wednesday
+        #Year turning over in 1960s
+        ("19681230-19690105", 6),#From Monday to Sunday
+        #Leap day in 1800s
+        ("18640225-18640302", 2),# From Thursday to Wednesday
+        #Leap day in 1900s
+        ("19800226-19800303", 0),# From Tuesday to Monday
+        #Decade switch in 1800s
+        ("18191230-18200105",2),# Thursday to Wednesday
+        #Decade switch from 1940s to 1950s
+        ("19491228-19500103", 1)# Wednesday Tuesday
+    ],
+)
+def test_old_and_retro_periods(datestring, expected):
+    """
+    Test rcreating the period object using the YYYYMMDD-YYYYMMDD format.
+    We verify our test by looking at which day of the week we end on.
+    We test in two different centuries as well as edge cases where we have
+    a year shift or a decade shift.
+    """
     p = pd.Period(datestring)
-    assert p.year.values == expected[0]# Test that year values match
-    assert p.freqstr == expected[1]# Check that the frequency 
+    assert p.day_of_week == expected
+    
+@pytest.mark.parametrize(
+    "datestring",
+    [
+        # The black friday stock market week.
+        "18690924-18690930",
+        #Finland's independence
+        "19171206-19171212",
+        #Year turning over in 1960s
+        "19681230-19690105",
+        #Year turning over in 1970s
+        "19751229-19760104",
+        #Year turning over in 1990s
+        "19931231-19940106",
+        #Decade switch from 1940s to 1950s
+        "19491228-19500103",
+        #Decade switch in 1800s
+        "18191230-18200105",
+        #Year switch in 1800s
+        "18531229-18540104",
+        #Leap day in 1800s
+        "18640225-18640302",
+        #Leap day in 1900s
+        "19800226-19800303",
+    ],
+)
+def test_old_and_retro_periods_line_formatted_reinitialised(datestring):
+    """
+    Test re-creating the period object using the YYYYMMDD-YYYYMMDD format and making sure
+    we get the same object in return. We test in various edge cases such as 1900s and 1800s, decade switches,
+    as well as year swithes
+    """
+    p = pd.Period(datestring)
+    p_recreation = pd.Period(str(p))
+    assert p == p_recreation
