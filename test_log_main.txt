@@ -1,0 +1,34 @@
+============================= test session starts ==============================
+platform linux -- Python 3.10.8, pytest-8.3.4, pluggy-1.5.0
+PyQt5 5.15.11 -- Qt runtime 5.15.16 -- Qt compiled 5.15.14
+rootdir: /home/pandas
+configfile: pyproject.toml
+plugins: xdist-3.6.1, qt-4.4.0, hypothesis-6.127.2, localserver-0.9.0.post0, anyio-4.8.0, cython-0.3.1, cov-6.0.0
+collected 125 items
+
+pandas/tests/tslibs/test_period.py ...........................................................
+Period(freq='W', year=2060) -> '2059-12-29/2060-01-04'
+.
+Period(freq='W', year=2070) -> '2069-12-30/2070-01-05'
+.
+Period(freq='W', year=2080) -> '2080-01-01/2080-01-07'
+.
+Period(freq='W', year=2090) -> '2089-12-26/2090-01-01'
+.
+Period(freq='W', year=2172) -> '2171-12-30/2172-01-05'
+.
+Period(freq='W', year=2272) -> '2272-01-01/2272-01-07'
+.
+Period(freq='W', year=2362) -> '2362-01-01/2362-01-07'
+.
+Period(freq='W', year=2400) -> '2399-12-27/2400-01-02'
+.
+Period(freq='W', year=2482) -> '2481-12-29/2482-01-04'
+..........................................................
+
+---------------- generated xml file: /home/pandas/test-data.xml ----------------
+============================= slowest 30 durations =============================
+0.02s setup    pandas/tests/tslibs/test_period.py::test_intra_day_conversion_factors[D-h-24]
+
+(29 durations < 0.005s hidden.  Use -vv to show these durations.)
+============================= 125 passed in 1.25s ==============================
