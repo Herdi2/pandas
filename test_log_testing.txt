@@ -1,0 +1,2545 @@
+============================= test session starts ==============================
+platform linux -- Python 3.10.8, pytest-8.3.4, pluggy-1.5.0
+PyQt5 5.15.11 -- Qt runtime 5.15.16 -- Qt compiled 5.15.14
+rootdir: /home/pandas
+configfile: pyproject.toml
+plugins: xdist-3.6.1, qt-4.4.0, hypothesis-6.127.2, localserver-0.9.0.post0, anyio-4.8.0, cython-0.3.1, cov-6.0.0
+collected 125 items
+
+pandas/tests/tslibs/test_period.py .......................................FFFFFFFFFFFF........
+Period(freq='W', year=2060) -> '2059-12-29/2060-01-04'
+.
+Period(freq='W', year=2070) -> '2069-12-30/2070-01-05'
+.
+Period(freq='W', year=2080) -> '2080-01-01/2080-01-07'
+.
+Period(freq='W', year=2090) -> '2089-12-26/2090-01-01'
+.
+Period(freq='W', year=2172) -> '2171-12-30/2172-01-05'
+.
+Period(freq='W', year=2272) -> '2272-01-01/2272-01-07'
+.
+Period(freq='W', year=2362) -> '2362-01-01/2362-01-07'
+.
+Period(freq='W', year=2400) -> '2399-12-27/2400-01-02'
+.
+Period(freq='W', year=2482) -> '2481-12-29/2482-01-04'
+.FFFFFFFFFFFFFFFFF............FFFFFFFFFF..FFFFFFFFFFFFFFFF
+
+=================================== FAILURES ===================================
+_____________ test_period_with_ordinal_dates[2022-001-2022-01-01] ______________
+
+ordinal_str = '2022-001', expected_date_str = '2022-01-01'
+
+    @pytest.mark.parametrize(
+        "ordinal_str,expected_date_str",
+        [
+            # Basic ordinal date tests
+            ("2022-001", "2022-01-01"),  # First day of year
+            ("2022-032", "2022-02-01"),  # February 1
+            ("2022-219", "2022-08-07"),  # August 7 (from row 6)
+            ("2022-365", "2022-12-31"),  # Last day of common year
+    
+            # Leap year tests
+            ("2020-060", "2020-02-29"),  # Feb 29 in leap year
+            ("2020-366", "2020-12-31"),  # Last day of leap year
+    
+            # 24th century ordinal dates
+            ("2300-180", "2300-06-29"),  # Mid-year in 24th century
+            ("2320-001", "2320-01-01"),  # First day of 2320
+            ("2400-060", "2400-02-29"),  # Feb 29 in leap year (div by 400)
+            ("2400-366", "2400-12-31"),  # Last day of leap year 2400
+        ],
+    )
+    def test_period_with_ordinal_dates(ordinal_str, expected_date_str):
+        """Test that Period constructor can parse ISO 8601 ordinal dates."""
+        # Create Period with ordinal date string
+>       period = pd.Period(ordinal_str)
+
+pandas/tests/tslibs/test_period.py:151: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pandas/_libs/tslibs/period.pyx:2972: in pandas._libs.tslibs.period.Period.__new__
+    raise err
+pandas/_libs/tslibs/period.pyx:2964: in pandas._libs.tslibs.period.Period.__new__
+    dt, reso = parse_datetime_string_with_reso(value, freqstr)
+pandas/_libs/tslibs/parsing.pyx:428: in pandas._libs.tslibs.parsing.parse_datetime_string_with_reso
+    parsed = dateutil_parse(date_string, _DEFAULT_DATETIME,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise DateParseError(
+E   pandas._libs.tslibs.parsing.DateParseError: Unknown datetime string format, unable to parse: 2022-001
+
+pandas/_libs/tslibs/parsing.pyx:652: DateParseError
+_____________ test_period_with_ordinal_dates[2022-032-2022-02-01] ______________
+
+ordinal_str = '2022-032', expected_date_str = '2022-02-01'
+
+    @pytest.mark.parametrize(
+        "ordinal_str,expected_date_str",
+        [
+            # Basic ordinal date tests
+            ("2022-001", "2022-01-01"),  # First day of year
+            ("2022-032", "2022-02-01"),  # February 1
+            ("2022-219", "2022-08-07"),  # August 7 (from row 6)
+            ("2022-365", "2022-12-31"),  # Last day of common year
+    
+            # Leap year tests
+            ("2020-060", "2020-02-29"),  # Feb 29 in leap year
+            ("2020-366", "2020-12-31"),  # Last day of leap year
+    
+            # 24th century ordinal dates
+            ("2300-180", "2300-06-29"),  # Mid-year in 24th century
+            ("2320-001", "2320-01-01"),  # First day of 2320
+            ("2400-060", "2400-02-29"),  # Feb 29 in leap year (div by 400)
+            ("2400-366", "2400-12-31"),  # Last day of leap year 2400
+        ],
+    )
+    def test_period_with_ordinal_dates(ordinal_str, expected_date_str):
+        """Test that Period constructor can parse ISO 8601 ordinal dates."""
+        # Create Period with ordinal date string
+>       period = pd.Period(ordinal_str)
+
+pandas/tests/tslibs/test_period.py:151: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pandas/_libs/tslibs/period.pyx:2972: in pandas._libs.tslibs.period.Period.__new__
+    raise err
+pandas/_libs/tslibs/period.pyx:2964: in pandas._libs.tslibs.period.Period.__new__
+    dt, reso = parse_datetime_string_with_reso(value, freqstr)
+pandas/_libs/tslibs/parsing.pyx:428: in pandas._libs.tslibs.parsing.parse_datetime_string_with_reso
+    parsed = dateutil_parse(date_string, _DEFAULT_DATETIME,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise DateParseError(
+E   pandas._libs.tslibs.parsing.DateParseError: Unknown datetime string format, unable to parse: 2022-032
+
+pandas/_libs/tslibs/parsing.pyx:652: DateParseError
+_____________ test_period_with_ordinal_dates[2022-219-2022-08-07] ______________
+
+ordinal_str = '2022-219', expected_date_str = '2022-08-07'
+
+    @pytest.mark.parametrize(
+        "ordinal_str,expected_date_str",
+        [
+            # Basic ordinal date tests
+            ("2022-001", "2022-01-01"),  # First day of year
+            ("2022-032", "2022-02-01"),  # February 1
+            ("2022-219", "2022-08-07"),  # August 7 (from row 6)
+            ("2022-365", "2022-12-31"),  # Last day of common year
+    
+            # Leap year tests
+            ("2020-060", "2020-02-29"),  # Feb 29 in leap year
+            ("2020-366", "2020-12-31"),  # Last day of leap year
+    
+            # 24th century ordinal dates
+            ("2300-180", "2300-06-29"),  # Mid-year in 24th century
+            ("2320-001", "2320-01-01"),  # First day of 2320
+            ("2400-060", "2400-02-29"),  # Feb 29 in leap year (div by 400)
+            ("2400-366", "2400-12-31"),  # Last day of leap year 2400
+        ],
+    )
+    def test_period_with_ordinal_dates(ordinal_str, expected_date_str):
+        """Test that Period constructor can parse ISO 8601 ordinal dates."""
+        # Create Period with ordinal date string
+>       period = pd.Period(ordinal_str)
+
+pandas/tests/tslibs/test_period.py:151: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pandas/_libs/tslibs/period.pyx:2972: in pandas._libs.tslibs.period.Period.__new__
+    raise err
+pandas/_libs/tslibs/period.pyx:2964: in pandas._libs.tslibs.period.Period.__new__
+    dt, reso = parse_datetime_string_with_reso(value, freqstr)
+pandas/_libs/tslibs/parsing.pyx:428: in pandas._libs.tslibs.parsing.parse_datetime_string_with_reso
+    parsed = dateutil_parse(date_string, _DEFAULT_DATETIME,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise DateParseError(
+E   pandas._libs.tslibs.parsing.DateParseError: Unknown datetime string format, unable to parse: 2022-219
+
+pandas/_libs/tslibs/parsing.pyx:652: DateParseError
+_____________ test_period_with_ordinal_dates[2022-365-2022-12-31] ______________
+
+ordinal_str = '2022-365', expected_date_str = '2022-12-31'
+
+    @pytest.mark.parametrize(
+        "ordinal_str,expected_date_str",
+        [
+            # Basic ordinal date tests
+            ("2022-001", "2022-01-01"),  # First day of year
+            ("2022-032", "2022-02-01"),  # February 1
+            ("2022-219", "2022-08-07"),  # August 7 (from row 6)
+            ("2022-365", "2022-12-31"),  # Last day of common year
+    
+            # Leap year tests
+            ("2020-060", "2020-02-29"),  # Feb 29 in leap year
+            ("2020-366", "2020-12-31"),  # Last day of leap year
+    
+            # 24th century ordinal dates
+            ("2300-180", "2300-06-29"),  # Mid-year in 24th century
+            ("2320-001", "2320-01-01"),  # First day of 2320
+            ("2400-060", "2400-02-29"),  # Feb 29 in leap year (div by 400)
+            ("2400-366", "2400-12-31"),  # Last day of leap year 2400
+        ],
+    )
+    def test_period_with_ordinal_dates(ordinal_str, expected_date_str):
+        """Test that Period constructor can parse ISO 8601 ordinal dates."""
+        # Create Period with ordinal date string
+>       period = pd.Period(ordinal_str)
+
+pandas/tests/tslibs/test_period.py:151: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pandas/_libs/tslibs/period.pyx:2972: in pandas._libs.tslibs.period.Period.__new__
+    raise err
+pandas/_libs/tslibs/period.pyx:2964: in pandas._libs.tslibs.period.Period.__new__
+    dt, reso = parse_datetime_string_with_reso(value, freqstr)
+pandas/_libs/tslibs/parsing.pyx:428: in pandas._libs.tslibs.parsing.parse_datetime_string_with_reso
+    parsed = dateutil_parse(date_string, _DEFAULT_DATETIME,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise DateParseError(
+E   pandas._libs.tslibs.parsing.DateParseError: Unknown datetime string format, unable to parse: 2022-365
+
+pandas/_libs/tslibs/parsing.pyx:652: DateParseError
+_____________ test_period_with_ordinal_dates[2020-060-2020-02-29] ______________
+
+ordinal_str = '2020-060', expected_date_str = '2020-02-29'
+
+    @pytest.mark.parametrize(
+        "ordinal_str,expected_date_str",
+        [
+            # Basic ordinal date tests
+            ("2022-001", "2022-01-01"),  # First day of year
+            ("2022-032", "2022-02-01"),  # February 1
+            ("2022-219", "2022-08-07"),  # August 7 (from row 6)
+            ("2022-365", "2022-12-31"),  # Last day of common year
+    
+            # Leap year tests
+            ("2020-060", "2020-02-29"),  # Feb 29 in leap year
+            ("2020-366", "2020-12-31"),  # Last day of leap year
+    
+            # 24th century ordinal dates
+            ("2300-180", "2300-06-29"),  # Mid-year in 24th century
+            ("2320-001", "2320-01-01"),  # First day of 2320
+            ("2400-060", "2400-02-29"),  # Feb 29 in leap year (div by 400)
+            ("2400-366", "2400-12-31"),  # Last day of leap year 2400
+        ],
+    )
+    def test_period_with_ordinal_dates(ordinal_str, expected_date_str):
+        """Test that Period constructor can parse ISO 8601 ordinal dates."""
+        # Create Period with ordinal date string
+>       period = pd.Period(ordinal_str)
+
+pandas/tests/tslibs/test_period.py:151: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pandas/_libs/tslibs/period.pyx:2972: in pandas._libs.tslibs.period.Period.__new__
+    raise err
+pandas/_libs/tslibs/period.pyx:2964: in pandas._libs.tslibs.period.Period.__new__
+    dt, reso = parse_datetime_string_with_reso(value, freqstr)
+pandas/_libs/tslibs/parsing.pyx:428: in pandas._libs.tslibs.parsing.parse_datetime_string_with_reso
+    parsed = dateutil_parse(date_string, _DEFAULT_DATETIME,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise DateParseError(
+E   pandas._libs.tslibs.parsing.DateParseError: Unknown datetime string format, unable to parse: 2020-060
+
+pandas/_libs/tslibs/parsing.pyx:652: DateParseError
+_____________ test_period_with_ordinal_dates[2020-366-2020-12-31] ______________
+
+ordinal_str = '2020-366', expected_date_str = '2020-12-31'
+
+    @pytest.mark.parametrize(
+        "ordinal_str,expected_date_str",
+        [
+            # Basic ordinal date tests
+            ("2022-001", "2022-01-01"),  # First day of year
+            ("2022-032", "2022-02-01"),  # February 1
+            ("2022-219", "2022-08-07"),  # August 7 (from row 6)
+            ("2022-365", "2022-12-31"),  # Last day of common year
+    
+            # Leap year tests
+            ("2020-060", "2020-02-29"),  # Feb 29 in leap year
+            ("2020-366", "2020-12-31"),  # Last day of leap year
+    
+            # 24th century ordinal dates
+            ("2300-180", "2300-06-29"),  # Mid-year in 24th century
+            ("2320-001", "2320-01-01"),  # First day of 2320
+            ("2400-060", "2400-02-29"),  # Feb 29 in leap year (div by 400)
+            ("2400-366", "2400-12-31"),  # Last day of leap year 2400
+        ],
+    )
+    def test_period_with_ordinal_dates(ordinal_str, expected_date_str):
+        """Test that Period constructor can parse ISO 8601 ordinal dates."""
+        # Create Period with ordinal date string
+>       period = pd.Period(ordinal_str)
+
+pandas/tests/tslibs/test_period.py:151: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pandas/_libs/tslibs/period.pyx:2972: in pandas._libs.tslibs.period.Period.__new__
+    raise err
+pandas/_libs/tslibs/period.pyx:2964: in pandas._libs.tslibs.period.Period.__new__
+    dt, reso = parse_datetime_string_with_reso(value, freqstr)
+pandas/_libs/tslibs/parsing.pyx:428: in pandas._libs.tslibs.parsing.parse_datetime_string_with_reso
+    parsed = dateutil_parse(date_string, _DEFAULT_DATETIME,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise DateParseError(
+E   pandas._libs.tslibs.parsing.DateParseError: Unknown datetime string format, unable to parse: 2020-366
+
+pandas/_libs/tslibs/parsing.pyx:652: DateParseError
+_____________ test_period_with_ordinal_dates[2300-180-2300-06-29] ______________
+
+ordinal_str = '2300-180', expected_date_str = '2300-06-29'
+
+    @pytest.mark.parametrize(
+        "ordinal_str,expected_date_str",
+        [
+            # Basic ordinal date tests
+            ("2022-001", "2022-01-01"),  # First day of year
+            ("2022-032", "2022-02-01"),  # February 1
+            ("2022-219", "2022-08-07"),  # August 7 (from row 6)
+            ("2022-365", "2022-12-31"),  # Last day of common year
+    
+            # Leap year tests
+            ("2020-060", "2020-02-29"),  # Feb 29 in leap year
+            ("2020-366", "2020-12-31"),  # Last day of leap year
+    
+            # 24th century ordinal dates
+            ("2300-180", "2300-06-29"),  # Mid-year in 24th century
+            ("2320-001", "2320-01-01"),  # First day of 2320
+            ("2400-060", "2400-02-29"),  # Feb 29 in leap year (div by 400)
+            ("2400-366", "2400-12-31"),  # Last day of leap year 2400
+        ],
+    )
+    def test_period_with_ordinal_dates(ordinal_str, expected_date_str):
+        """Test that Period constructor can parse ISO 8601 ordinal dates."""
+        # Create Period with ordinal date string
+>       period = pd.Period(ordinal_str)
+
+pandas/tests/tslibs/test_period.py:151: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pandas/_libs/tslibs/period.pyx:2972: in pandas._libs.tslibs.period.Period.__new__
+    raise err
+pandas/_libs/tslibs/period.pyx:2964: in pandas._libs.tslibs.period.Period.__new__
+    dt, reso = parse_datetime_string_with_reso(value, freqstr)
+pandas/_libs/tslibs/parsing.pyx:428: in pandas._libs.tslibs.parsing.parse_datetime_string_with_reso
+    parsed = dateutil_parse(date_string, _DEFAULT_DATETIME,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise DateParseError(
+E   pandas._libs.tslibs.parsing.DateParseError: Unknown datetime string format, unable to parse: 2300-180
+
+pandas/_libs/tslibs/parsing.pyx:652: DateParseError
+_____________ test_period_with_ordinal_dates[2320-001-2320-01-01] ______________
+
+ordinal_str = '2320-001', expected_date_str = '2320-01-01'
+
+    @pytest.mark.parametrize(
+        "ordinal_str,expected_date_str",
+        [
+            # Basic ordinal date tests
+            ("2022-001", "2022-01-01"),  # First day of year
+            ("2022-032", "2022-02-01"),  # February 1
+            ("2022-219", "2022-08-07"),  # August 7 (from row 6)
+            ("2022-365", "2022-12-31"),  # Last day of common year
+    
+            # Leap year tests
+            ("2020-060", "2020-02-29"),  # Feb 29 in leap year
+            ("2020-366", "2020-12-31"),  # Last day of leap year
+    
+            # 24th century ordinal dates
+            ("2300-180", "2300-06-29"),  # Mid-year in 24th century
+            ("2320-001", "2320-01-01"),  # First day of 2320
+            ("2400-060", "2400-02-29"),  # Feb 29 in leap year (div by 400)
+            ("2400-366", "2400-12-31"),  # Last day of leap year 2400
+        ],
+    )
+    def test_period_with_ordinal_dates(ordinal_str, expected_date_str):
+        """Test that Period constructor can parse ISO 8601 ordinal dates."""
+        # Create Period with ordinal date string
+>       period = pd.Period(ordinal_str)
+
+pandas/tests/tslibs/test_period.py:151: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pandas/_libs/tslibs/period.pyx:2972: in pandas._libs.tslibs.period.Period.__new__
+    raise err
+pandas/_libs/tslibs/period.pyx:2964: in pandas._libs.tslibs.period.Period.__new__
+    dt, reso = parse_datetime_string_with_reso(value, freqstr)
+pandas/_libs/tslibs/parsing.pyx:428: in pandas._libs.tslibs.parsing.parse_datetime_string_with_reso
+    parsed = dateutil_parse(date_string, _DEFAULT_DATETIME,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise DateParseError(
+E   pandas._libs.tslibs.parsing.DateParseError: Unknown datetime string format, unable to parse: 2320-001
+
+pandas/_libs/tslibs/parsing.pyx:652: DateParseError
+_____________ test_period_with_ordinal_dates[2400-060-2400-02-29] ______________
+
+ordinal_str = '2400-060', expected_date_str = '2400-02-29'
+
+    @pytest.mark.parametrize(
+        "ordinal_str,expected_date_str",
+        [
+            # Basic ordinal date tests
+            ("2022-001", "2022-01-01"),  # First day of year
+            ("2022-032", "2022-02-01"),  # February 1
+            ("2022-219", "2022-08-07"),  # August 7 (from row 6)
+            ("2022-365", "2022-12-31"),  # Last day of common year
+    
+            # Leap year tests
+            ("2020-060", "2020-02-29"),  # Feb 29 in leap year
+            ("2020-366", "2020-12-31"),  # Last day of leap year
+    
+            # 24th century ordinal dates
+            ("2300-180", "2300-06-29"),  # Mid-year in 24th century
+            ("2320-001", "2320-01-01"),  # First day of 2320
+            ("2400-060", "2400-02-29"),  # Feb 29 in leap year (div by 400)
+            ("2400-366", "2400-12-31"),  # Last day of leap year 2400
+        ],
+    )
+    def test_period_with_ordinal_dates(ordinal_str, expected_date_str):
+        """Test that Period constructor can parse ISO 8601 ordinal dates."""
+        # Create Period with ordinal date string
+>       period = pd.Period(ordinal_str)
+
+pandas/tests/tslibs/test_period.py:151: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pandas/_libs/tslibs/period.pyx:2972: in pandas._libs.tslibs.period.Period.__new__
+    raise err
+pandas/_libs/tslibs/period.pyx:2964: in pandas._libs.tslibs.period.Period.__new__
+    dt, reso = parse_datetime_string_with_reso(value, freqstr)
+pandas/_libs/tslibs/parsing.pyx:428: in pandas._libs.tslibs.parsing.parse_datetime_string_with_reso
+    parsed = dateutil_parse(date_string, _DEFAULT_DATETIME,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise DateParseError(
+E   pandas._libs.tslibs.parsing.DateParseError: Unknown datetime string format, unable to parse: 2400-060
+
+pandas/_libs/tslibs/parsing.pyx:652: DateParseError
+_____________ test_period_with_ordinal_dates[2400-366-2400-12-31] ______________
+
+ordinal_str = '2400-366', expected_date_str = '2400-12-31'
+
+    @pytest.mark.parametrize(
+        "ordinal_str,expected_date_str",
+        [
+            # Basic ordinal date tests
+            ("2022-001", "2022-01-01"),  # First day of year
+            ("2022-032", "2022-02-01"),  # February 1
+            ("2022-219", "2022-08-07"),  # August 7 (from row 6)
+            ("2022-365", "2022-12-31"),  # Last day of common year
+    
+            # Leap year tests
+            ("2020-060", "2020-02-29"),  # Feb 29 in leap year
+            ("2020-366", "2020-12-31"),  # Last day of leap year
+    
+            # 24th century ordinal dates
+            ("2300-180", "2300-06-29"),  # Mid-year in 24th century
+            ("2320-001", "2320-01-01"),  # First day of 2320
+            ("2400-060", "2400-02-29"),  # Feb 29 in leap year (div by 400)
+            ("2400-366", "2400-12-31"),  # Last day of leap year 2400
+        ],
+    )
+    def test_period_with_ordinal_dates(ordinal_str, expected_date_str):
+        """Test that Period constructor can parse ISO 8601 ordinal dates."""
+        # Create Period with ordinal date string
+>       period = pd.Period(ordinal_str)
+
+pandas/tests/tslibs/test_period.py:151: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pandas/_libs/tslibs/period.pyx:2972: in pandas._libs.tslibs.period.Period.__new__
+    raise err
+pandas/_libs/tslibs/period.pyx:2964: in pandas._libs.tslibs.period.Period.__new__
+    dt, reso = parse_datetime_string_with_reso(value, freqstr)
+pandas/_libs/tslibs/parsing.pyx:428: in pandas._libs.tslibs.parsing.parse_datetime_string_with_reso
+    parsed = dateutil_parse(date_string, _DEFAULT_DATETIME,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise DateParseError(
+E   pandas._libs.tslibs.parsing.DateParseError: Unknown datetime string format, unable to parse: 2400-366
+
+pandas/_libs/tslibs/parsing.pyx:652: DateParseError
+____ test_period_with_24th_century_weeks[2301-01-01/2301-01-07-2301-01-07] _____
+
+week_str = '2301-01-01/2301-01-07', expected_end_date = '2301-01-07'
+
+    @pytest.mark.parametrize(
+        "week_str,expected_end_date",
+        [
+            # 24th century weekly tests
+            ("2301-01-01/2301-01-07", "2301-01-07"),  # First week of 24th century
+            ("2350-06-25/2350-07-01", "2350-07-01"),  # Mid-24th century
+            ("2399-12-25/2399-12-31", "2399-12-31"),  # Last week of 24th century
+    
+            # Week crossing years in future centuries - modified to use end dates
+            ("2361-12-31/2362-01-06", "2362-01-06"),  # Week crossing years
+            ("2481-12-29/2482-01-04", "2482-01-04"),  # Week from row 73
+    
+            # Problem cases from the issue table - modified to use end dates
+            ("2061-12-26/2062-01-01", "2062-01-01"),  # Row 59
+            ("2181-12-31/2182-01-06", "2182-01-06"),  # Row 63
+            ("2272-01-01/2272-01-07", "2272-01-07"),  # Row 66
+            ("2362-01-01/2362-01-07", "2362-01-07"),  # Row 69
+            ("2452-01-01/2452-01-07", "2452-01-07"),  # Row 72
+        ],
+    )
+    def test_period_with_24th_century_weeks(week_str, expected_end_date):
+        """Test that Period constructor can handle week format strings in the 24th century."""
+        # Create Period with week string
+        period = pd.Period(week_str)
+    
+        # Get the end date from the string
+        _, end_str = week_str.split('/')
+        end_date = pd.Timestamp(end_str)
+    
+        # Verify the period's day matches the end date's day
+>       assert period.day == end_date.day, f"Day mismatch for {week_str}"
+E       AssertionError: Day mismatch for 2301-01-01/2301-01-07
+E       assert 1 == 7
+E        +  where 1 = Period('2301-01-01 23:01', 'min').day
+E        +  and   7 = Timestamp('2301-01-07 00:00:00').day
+
+pandas/tests/tslibs/test_period.py:193: AssertionError
+____ test_period_with_24th_century_weeks[2350-06-25/2350-07-01-2350-07-01] _____
+
+week_str = '2350-06-25/2350-07-01', expected_end_date = '2350-07-01'
+
+    @pytest.mark.parametrize(
+        "week_str,expected_end_date",
+        [
+            # 24th century weekly tests
+            ("2301-01-01/2301-01-07", "2301-01-07"),  # First week of 24th century
+            ("2350-06-25/2350-07-01", "2350-07-01"),  # Mid-24th century
+            ("2399-12-25/2399-12-31", "2399-12-31"),  # Last week of 24th century
+    
+            # Week crossing years in future centuries - modified to use end dates
+            ("2361-12-31/2362-01-06", "2362-01-06"),  # Week crossing years
+            ("2481-12-29/2482-01-04", "2482-01-04"),  # Week from row 73
+    
+            # Problem cases from the issue table - modified to use end dates
+            ("2061-12-26/2062-01-01", "2062-01-01"),  # Row 59
+            ("2181-12-31/2182-01-06", "2182-01-06"),  # Row 63
+            ("2272-01-01/2272-01-07", "2272-01-07"),  # Row 66
+            ("2362-01-01/2362-01-07", "2362-01-07"),  # Row 69
+            ("2452-01-01/2452-01-07", "2452-01-07"),  # Row 72
+        ],
+    )
+    def test_period_with_24th_century_weeks(week_str, expected_end_date):
+        """Test that Period constructor can handle week format strings in the 24th century."""
+        # Create Period with week string
+        period = pd.Period(week_str)
+    
+        # Get the end date from the string
+        _, end_str = week_str.split('/')
+        end_date = pd.Timestamp(end_str)
+    
+        # Verify the period's day matches the end date's day
+>       assert period.day == end_date.day, f"Day mismatch for {week_str}"
+E       AssertionError: Day mismatch for 2350-06-25/2350-07-01
+E       assert 25 == 1
+E        +  where 25 = Period('2350-06-25 23:50', 'min').day
+E        +  and   1 = Timestamp('2350-07-01 00:00:00').day
+
+pandas/tests/tslibs/test_period.py:193: AssertionError
+________ test_period_parse_weeks_positive[20250106-20250112-expected0] _________
+
+datestring = '20250106-20250112'
+expected = ['2025-01-06/2025-01-12', 'W-SUN', '2025-01-06 00:00:00', '2025-01-12 23:59:59.999999999', 6, 2]
+
+    @pytest.mark.parametrize(
+        "datestring,expected", # expected = [str,freqstr,start_time,end_time,day_of_week,week]
+        [   # basic input
+            ('20250106-20250112',['2025-01-06/2025-01-12', 'W-SUN', '2025-01-06 00:00:00', '2025-01-12 23:59:59.999999999', 6, 2]), # mon-sun
+            # week turning over
+            ('20250101-20250107',['2025-01-01/2025-01-07', 'W-TUE', '2025-01-01 00:00:00', '2025-01-07 23:59:59.999999999', 1, 2]), # wed-tue
+            ('20250112-20250118',['2025-01-12/2025-01-18', 'W-SAT', '2025-01-12 00:00:00', '2025-01-18 23:59:59.999999999', 5, 3]), # sun-sat
+    
+            # month turning over
+            ('20250228-20250306',['2025-02-28/2025-03-06', 'W-THU', '2025-02-28 00:00:00', '2025-03-06 23:59:59.999999999', 3, 10]), # fri-thur
+            ('20251125-20251201',['2025-11-25/2025-12-01', 'W-MON', '2025-11-25 00:00:00','2025-12-01 23:59:59.999999999', 0, 49]), # tue-mon
+    
+            # year turning over
+            ('19991231-20000106', ['1999-12-31/2000-01-06', 'W-THU', '1999-12-31 00:00:00', '2000-01-06 23:59:59.999999999', 3, 1]), # fri-thur
+            ('20161229-20170104', ['2016-12-29/2017-01-04', 'W-WED', '2016-12-29 00:00:00', '2017-01-04 23:59:59.999999999', 2, 1]), # thur-wed
+            ('20121231-20130106', ['2012-12-31/2013-01-06', 'W-SUN', '2012-12-31 00:00:00', '2013-01-06 23:59:59.999999999', 6, 1]), # mon-sun
+            # leap day
+            ('20240226-20240303', ['2024-02-26/2024-03-03', 'W-SUN', '2024-02-26 00:00:00', '2024-03-03 23:59:59.999999999', 6, 9]), # mon-sun
+        ],
+    )
+    def test_period_parse_weeks_positive(datestring,expected):
+        """
+        Tests correct attributes for Period objects created from the
+        dedicated YYYYMMDD-YYYYMMDD week format with valid inputs.
+        """
+>       p = pd.Period(datestring)
+
+pandas/tests/tslibs/test_period.py:255: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pandas/_libs/tslibs/period.pyx:2972: in pandas._libs.tslibs.period.Period.__new__
+    raise err
+pandas/_libs/tslibs/period.pyx:2964: in pandas._libs.tslibs.period.Period.__new__
+    dt, reso = parse_datetime_string_with_reso(value, freqstr)
+pandas/_libs/tslibs/parsing.pyx:428: in pandas._libs.tslibs.parsing.parse_datetime_string_with_reso
+    parsed = dateutil_parse(date_string, _DEFAULT_DATETIME,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise DateParseError(
+E   pandas._libs.tslibs.parsing.DateParseError: Unknown datetime string format, unable to parse: 20250106-20250112
+
+pandas/_libs/tslibs/parsing.pyx:652: DateParseError
+________ test_period_parse_weeks_positive[20250101-20250107-expected1] _________
+
+datestring = '20250101-20250107'
+expected = ['2025-01-01/2025-01-07', 'W-TUE', '2025-01-01 00:00:00', '2025-01-07 23:59:59.999999999', 1, 2]
+
+    @pytest.mark.parametrize(
+        "datestring,expected", # expected = [str,freqstr,start_time,end_time,day_of_week,week]
+        [   # basic input
+            ('20250106-20250112',['2025-01-06/2025-01-12', 'W-SUN', '2025-01-06 00:00:00', '2025-01-12 23:59:59.999999999', 6, 2]), # mon-sun
+            # week turning over
+            ('20250101-20250107',['2025-01-01/2025-01-07', 'W-TUE', '2025-01-01 00:00:00', '2025-01-07 23:59:59.999999999', 1, 2]), # wed-tue
+            ('20250112-20250118',['2025-01-12/2025-01-18', 'W-SAT', '2025-01-12 00:00:00', '2025-01-18 23:59:59.999999999', 5, 3]), # sun-sat
+    
+            # month turning over
+            ('20250228-20250306',['2025-02-28/2025-03-06', 'W-THU', '2025-02-28 00:00:00', '2025-03-06 23:59:59.999999999', 3, 10]), # fri-thur
+            ('20251125-20251201',['2025-11-25/2025-12-01', 'W-MON', '2025-11-25 00:00:00','2025-12-01 23:59:59.999999999', 0, 49]), # tue-mon
+    
+            # year turning over
+            ('19991231-20000106', ['1999-12-31/2000-01-06', 'W-THU', '1999-12-31 00:00:00', '2000-01-06 23:59:59.999999999', 3, 1]), # fri-thur
+            ('20161229-20170104', ['2016-12-29/2017-01-04', 'W-WED', '2016-12-29 00:00:00', '2017-01-04 23:59:59.999999999', 2, 1]), # thur-wed
+            ('20121231-20130106', ['2012-12-31/2013-01-06', 'W-SUN', '2012-12-31 00:00:00', '2013-01-06 23:59:59.999999999', 6, 1]), # mon-sun
+            # leap day
+            ('20240226-20240303', ['2024-02-26/2024-03-03', 'W-SUN', '2024-02-26 00:00:00', '2024-03-03 23:59:59.999999999', 6, 9]), # mon-sun
+        ],
+    )
+    def test_period_parse_weeks_positive(datestring,expected):
+        """
+        Tests correct attributes for Period objects created from the
+        dedicated YYYYMMDD-YYYYMMDD week format with valid inputs.
+        """
+>       p = pd.Period(datestring)
+
+pandas/tests/tslibs/test_period.py:255: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pandas/_libs/tslibs/period.pyx:2972: in pandas._libs.tslibs.period.Period.__new__
+    raise err
+pandas/_libs/tslibs/period.pyx:2964: in pandas._libs.tslibs.period.Period.__new__
+    dt, reso = parse_datetime_string_with_reso(value, freqstr)
+pandas/_libs/tslibs/parsing.pyx:428: in pandas._libs.tslibs.parsing.parse_datetime_string_with_reso
+    parsed = dateutil_parse(date_string, _DEFAULT_DATETIME,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise DateParseError(
+E   pandas._libs.tslibs.parsing.DateParseError: Unknown datetime string format, unable to parse: 20250101-20250107
+
+pandas/_libs/tslibs/parsing.pyx:652: DateParseError
+________ test_period_parse_weeks_positive[20250112-20250118-expected2] _________
+
+datestring = '20250112-20250118'
+expected = ['2025-01-12/2025-01-18', 'W-SAT', '2025-01-12 00:00:00', '2025-01-18 23:59:59.999999999', 5, 3]
+
+    @pytest.mark.parametrize(
+        "datestring,expected", # expected = [str,freqstr,start_time,end_time,day_of_week,week]
+        [   # basic input
+            ('20250106-20250112',['2025-01-06/2025-01-12', 'W-SUN', '2025-01-06 00:00:00', '2025-01-12 23:59:59.999999999', 6, 2]), # mon-sun
+            # week turning over
+            ('20250101-20250107',['2025-01-01/2025-01-07', 'W-TUE', '2025-01-01 00:00:00', '2025-01-07 23:59:59.999999999', 1, 2]), # wed-tue
+            ('20250112-20250118',['2025-01-12/2025-01-18', 'W-SAT', '2025-01-12 00:00:00', '2025-01-18 23:59:59.999999999', 5, 3]), # sun-sat
+    
+            # month turning over
+            ('20250228-20250306',['2025-02-28/2025-03-06', 'W-THU', '2025-02-28 00:00:00', '2025-03-06 23:59:59.999999999', 3, 10]), # fri-thur
+            ('20251125-20251201',['2025-11-25/2025-12-01', 'W-MON', '2025-11-25 00:00:00','2025-12-01 23:59:59.999999999', 0, 49]), # tue-mon
+    
+            # year turning over
+            ('19991231-20000106', ['1999-12-31/2000-01-06', 'W-THU', '1999-12-31 00:00:00', '2000-01-06 23:59:59.999999999', 3, 1]), # fri-thur
+            ('20161229-20170104', ['2016-12-29/2017-01-04', 'W-WED', '2016-12-29 00:00:00', '2017-01-04 23:59:59.999999999', 2, 1]), # thur-wed
+            ('20121231-20130106', ['2012-12-31/2013-01-06', 'W-SUN', '2012-12-31 00:00:00', '2013-01-06 23:59:59.999999999', 6, 1]), # mon-sun
+            # leap day
+            ('20240226-20240303', ['2024-02-26/2024-03-03', 'W-SUN', '2024-02-26 00:00:00', '2024-03-03 23:59:59.999999999', 6, 9]), # mon-sun
+        ],
+    )
+    def test_period_parse_weeks_positive(datestring,expected):
+        """
+        Tests correct attributes for Period objects created from the
+        dedicated YYYYMMDD-YYYYMMDD week format with valid inputs.
+        """
+>       p = pd.Period(datestring)
+
+pandas/tests/tslibs/test_period.py:255: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pandas/_libs/tslibs/period.pyx:2972: in pandas._libs.tslibs.period.Period.__new__
+    raise err
+pandas/_libs/tslibs/period.pyx:2964: in pandas._libs.tslibs.period.Period.__new__
+    dt, reso = parse_datetime_string_with_reso(value, freqstr)
+pandas/_libs/tslibs/parsing.pyx:428: in pandas._libs.tslibs.parsing.parse_datetime_string_with_reso
+    parsed = dateutil_parse(date_string, _DEFAULT_DATETIME,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise DateParseError(
+E   pandas._libs.tslibs.parsing.DateParseError: Unknown datetime string format, unable to parse: 20250112-20250118
+
+pandas/_libs/tslibs/parsing.pyx:652: DateParseError
+________ test_period_parse_weeks_positive[20250228-20250306-expected3] _________
+
+datestring = '20250228-20250306'
+expected = ['2025-02-28/2025-03-06', 'W-THU', '2025-02-28 00:00:00', '2025-03-06 23:59:59.999999999', 3, 10]
+
+    @pytest.mark.parametrize(
+        "datestring,expected", # expected = [str,freqstr,start_time,end_time,day_of_week,week]
+        [   # basic input
+            ('20250106-20250112',['2025-01-06/2025-01-12', 'W-SUN', '2025-01-06 00:00:00', '2025-01-12 23:59:59.999999999', 6, 2]), # mon-sun
+            # week turning over
+            ('20250101-20250107',['2025-01-01/2025-01-07', 'W-TUE', '2025-01-01 00:00:00', '2025-01-07 23:59:59.999999999', 1, 2]), # wed-tue
+            ('20250112-20250118',['2025-01-12/2025-01-18', 'W-SAT', '2025-01-12 00:00:00', '2025-01-18 23:59:59.999999999', 5, 3]), # sun-sat
+    
+            # month turning over
+            ('20250228-20250306',['2025-02-28/2025-03-06', 'W-THU', '2025-02-28 00:00:00', '2025-03-06 23:59:59.999999999', 3, 10]), # fri-thur
+            ('20251125-20251201',['2025-11-25/2025-12-01', 'W-MON', '2025-11-25 00:00:00','2025-12-01 23:59:59.999999999', 0, 49]), # tue-mon
+    
+            # year turning over
+            ('19991231-20000106', ['1999-12-31/2000-01-06', 'W-THU', '1999-12-31 00:00:00', '2000-01-06 23:59:59.999999999', 3, 1]), # fri-thur
+            ('20161229-20170104', ['2016-12-29/2017-01-04', 'W-WED', '2016-12-29 00:00:00', '2017-01-04 23:59:59.999999999', 2, 1]), # thur-wed
+            ('20121231-20130106', ['2012-12-31/2013-01-06', 'W-SUN', '2012-12-31 00:00:00', '2013-01-06 23:59:59.999999999', 6, 1]), # mon-sun
+            # leap day
+            ('20240226-20240303', ['2024-02-26/2024-03-03', 'W-SUN', '2024-02-26 00:00:00', '2024-03-03 23:59:59.999999999', 6, 9]), # mon-sun
+        ],
+    )
+    def test_period_parse_weeks_positive(datestring,expected):
+        """
+        Tests correct attributes for Period objects created from the
+        dedicated YYYYMMDD-YYYYMMDD week format with valid inputs.
+        """
+>       p = pd.Period(datestring)
+
+pandas/tests/tslibs/test_period.py:255: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pandas/_libs/tslibs/period.pyx:2972: in pandas._libs.tslibs.period.Period.__new__
+    raise err
+pandas/_libs/tslibs/period.pyx:2964: in pandas._libs.tslibs.period.Period.__new__
+    dt, reso = parse_datetime_string_with_reso(value, freqstr)
+pandas/_libs/tslibs/parsing.pyx:428: in pandas._libs.tslibs.parsing.parse_datetime_string_with_reso
+    parsed = dateutil_parse(date_string, _DEFAULT_DATETIME,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise DateParseError(
+E   pandas._libs.tslibs.parsing.DateParseError: Unknown datetime string format, unable to parse: 20250228-20250306
+
+pandas/_libs/tslibs/parsing.pyx:652: DateParseError
+________ test_period_parse_weeks_positive[20251125-20251201-expected4] _________
+
+datestring = '20251125-20251201'
+expected = ['2025-11-25/2025-12-01', 'W-MON', '2025-11-25 00:00:00', '2025-12-01 23:59:59.999999999', 0, 49]
+
+    @pytest.mark.parametrize(
+        "datestring,expected", # expected = [str,freqstr,start_time,end_time,day_of_week,week]
+        [   # basic input
+            ('20250106-20250112',['2025-01-06/2025-01-12', 'W-SUN', '2025-01-06 00:00:00', '2025-01-12 23:59:59.999999999', 6, 2]), # mon-sun
+            # week turning over
+            ('20250101-20250107',['2025-01-01/2025-01-07', 'W-TUE', '2025-01-01 00:00:00', '2025-01-07 23:59:59.999999999', 1, 2]), # wed-tue
+            ('20250112-20250118',['2025-01-12/2025-01-18', 'W-SAT', '2025-01-12 00:00:00', '2025-01-18 23:59:59.999999999', 5, 3]), # sun-sat
+    
+            # month turning over
+            ('20250228-20250306',['2025-02-28/2025-03-06', 'W-THU', '2025-02-28 00:00:00', '2025-03-06 23:59:59.999999999', 3, 10]), # fri-thur
+            ('20251125-20251201',['2025-11-25/2025-12-01', 'W-MON', '2025-11-25 00:00:00','2025-12-01 23:59:59.999999999', 0, 49]), # tue-mon
+    
+            # year turning over
+            ('19991231-20000106', ['1999-12-31/2000-01-06', 'W-THU', '1999-12-31 00:00:00', '2000-01-06 23:59:59.999999999', 3, 1]), # fri-thur
+            ('20161229-20170104', ['2016-12-29/2017-01-04', 'W-WED', '2016-12-29 00:00:00', '2017-01-04 23:59:59.999999999', 2, 1]), # thur-wed
+            ('20121231-20130106', ['2012-12-31/2013-01-06', 'W-SUN', '2012-12-31 00:00:00', '2013-01-06 23:59:59.999999999', 6, 1]), # mon-sun
+            # leap day
+            ('20240226-20240303', ['2024-02-26/2024-03-03', 'W-SUN', '2024-02-26 00:00:00', '2024-03-03 23:59:59.999999999', 6, 9]), # mon-sun
+        ],
+    )
+    def test_period_parse_weeks_positive(datestring,expected):
+        """
+        Tests correct attributes for Period objects created from the
+        dedicated YYYYMMDD-YYYYMMDD week format with valid inputs.
+        """
+>       p = pd.Period(datestring)
+
+pandas/tests/tslibs/test_period.py:255: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pandas/_libs/tslibs/period.pyx:2972: in pandas._libs.tslibs.period.Period.__new__
+    raise err
+pandas/_libs/tslibs/period.pyx:2964: in pandas._libs.tslibs.period.Period.__new__
+    dt, reso = parse_datetime_string_with_reso(value, freqstr)
+pandas/_libs/tslibs/parsing.pyx:428: in pandas._libs.tslibs.parsing.parse_datetime_string_with_reso
+    parsed = dateutil_parse(date_string, _DEFAULT_DATETIME,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise DateParseError(
+E   pandas._libs.tslibs.parsing.DateParseError: Unknown datetime string format, unable to parse: 20251125-20251201
+
+pandas/_libs/tslibs/parsing.pyx:652: DateParseError
+________ test_period_parse_weeks_positive[19991231-20000106-expected5] _________
+
+datestring = '19991231-20000106'
+expected = ['1999-12-31/2000-01-06', 'W-THU', '1999-12-31 00:00:00', '2000-01-06 23:59:59.999999999', 3, 1]
+
+    @pytest.mark.parametrize(
+        "datestring,expected", # expected = [str,freqstr,start_time,end_time,day_of_week,week]
+        [   # basic input
+            ('20250106-20250112',['2025-01-06/2025-01-12', 'W-SUN', '2025-01-06 00:00:00', '2025-01-12 23:59:59.999999999', 6, 2]), # mon-sun
+            # week turning over
+            ('20250101-20250107',['2025-01-01/2025-01-07', 'W-TUE', '2025-01-01 00:00:00', '2025-01-07 23:59:59.999999999', 1, 2]), # wed-tue
+            ('20250112-20250118',['2025-01-12/2025-01-18', 'W-SAT', '2025-01-12 00:00:00', '2025-01-18 23:59:59.999999999', 5, 3]), # sun-sat
+    
+            # month turning over
+            ('20250228-20250306',['2025-02-28/2025-03-06', 'W-THU', '2025-02-28 00:00:00', '2025-03-06 23:59:59.999999999', 3, 10]), # fri-thur
+            ('20251125-20251201',['2025-11-25/2025-12-01', 'W-MON', '2025-11-25 00:00:00','2025-12-01 23:59:59.999999999', 0, 49]), # tue-mon
+    
+            # year turning over
+            ('19991231-20000106', ['1999-12-31/2000-01-06', 'W-THU', '1999-12-31 00:00:00', '2000-01-06 23:59:59.999999999', 3, 1]), # fri-thur
+            ('20161229-20170104', ['2016-12-29/2017-01-04', 'W-WED', '2016-12-29 00:00:00', '2017-01-04 23:59:59.999999999', 2, 1]), # thur-wed
+            ('20121231-20130106', ['2012-12-31/2013-01-06', 'W-SUN', '2012-12-31 00:00:00', '2013-01-06 23:59:59.999999999', 6, 1]), # mon-sun
+            # leap day
+            ('20240226-20240303', ['2024-02-26/2024-03-03', 'W-SUN', '2024-02-26 00:00:00', '2024-03-03 23:59:59.999999999', 6, 9]), # mon-sun
+        ],
+    )
+    def test_period_parse_weeks_positive(datestring,expected):
+        """
+        Tests correct attributes for Period objects created from the
+        dedicated YYYYMMDD-YYYYMMDD week format with valid inputs.
+        """
+>       p = pd.Period(datestring)
+
+pandas/tests/tslibs/test_period.py:255: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pandas/_libs/tslibs/period.pyx:2972: in pandas._libs.tslibs.period.Period.__new__
+    raise err
+pandas/_libs/tslibs/period.pyx:2964: in pandas._libs.tslibs.period.Period.__new__
+    dt, reso = parse_datetime_string_with_reso(value, freqstr)
+pandas/_libs/tslibs/parsing.pyx:428: in pandas._libs.tslibs.parsing.parse_datetime_string_with_reso
+    parsed = dateutil_parse(date_string, _DEFAULT_DATETIME,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise DateParseError(
+E   pandas._libs.tslibs.parsing.DateParseError: Unknown datetime string format, unable to parse: 19991231-20000106
+
+pandas/_libs/tslibs/parsing.pyx:652: DateParseError
+________ test_period_parse_weeks_positive[20161229-20170104-expected6] _________
+
+datestring = '20161229-20170104'
+expected = ['2016-12-29/2017-01-04', 'W-WED', '2016-12-29 00:00:00', '2017-01-04 23:59:59.999999999', 2, 1]
+
+    @pytest.mark.parametrize(
+        "datestring,expected", # expected = [str,freqstr,start_time,end_time,day_of_week,week]
+        [   # basic input
+            ('20250106-20250112',['2025-01-06/2025-01-12', 'W-SUN', '2025-01-06 00:00:00', '2025-01-12 23:59:59.999999999', 6, 2]), # mon-sun
+            # week turning over
+            ('20250101-20250107',['2025-01-01/2025-01-07', 'W-TUE', '2025-01-01 00:00:00', '2025-01-07 23:59:59.999999999', 1, 2]), # wed-tue
+            ('20250112-20250118',['2025-01-12/2025-01-18', 'W-SAT', '2025-01-12 00:00:00', '2025-01-18 23:59:59.999999999', 5, 3]), # sun-sat
+    
+            # month turning over
+            ('20250228-20250306',['2025-02-28/2025-03-06', 'W-THU', '2025-02-28 00:00:00', '2025-03-06 23:59:59.999999999', 3, 10]), # fri-thur
+            ('20251125-20251201',['2025-11-25/2025-12-01', 'W-MON', '2025-11-25 00:00:00','2025-12-01 23:59:59.999999999', 0, 49]), # tue-mon
+    
+            # year turning over
+            ('19991231-20000106', ['1999-12-31/2000-01-06', 'W-THU', '1999-12-31 00:00:00', '2000-01-06 23:59:59.999999999', 3, 1]), # fri-thur
+            ('20161229-20170104', ['2016-12-29/2017-01-04', 'W-WED', '2016-12-29 00:00:00', '2017-01-04 23:59:59.999999999', 2, 1]), # thur-wed
+            ('20121231-20130106', ['2012-12-31/2013-01-06', 'W-SUN', '2012-12-31 00:00:00', '2013-01-06 23:59:59.999999999', 6, 1]), # mon-sun
+            # leap day
+            ('20240226-20240303', ['2024-02-26/2024-03-03', 'W-SUN', '2024-02-26 00:00:00', '2024-03-03 23:59:59.999999999', 6, 9]), # mon-sun
+        ],
+    )
+    def test_period_parse_weeks_positive(datestring,expected):
+        """
+        Tests correct attributes for Period objects created from the
+        dedicated YYYYMMDD-YYYYMMDD week format with valid inputs.
+        """
+>       p = pd.Period(datestring)
+
+pandas/tests/tslibs/test_period.py:255: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pandas/_libs/tslibs/period.pyx:2972: in pandas._libs.tslibs.period.Period.__new__
+    raise err
+pandas/_libs/tslibs/period.pyx:2964: in pandas._libs.tslibs.period.Period.__new__
+    dt, reso = parse_datetime_string_with_reso(value, freqstr)
+pandas/_libs/tslibs/parsing.pyx:428: in pandas._libs.tslibs.parsing.parse_datetime_string_with_reso
+    parsed = dateutil_parse(date_string, _DEFAULT_DATETIME,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise DateParseError(
+E   pandas._libs.tslibs.parsing.DateParseError: Unknown datetime string format, unable to parse: 20161229-20170104
+
+pandas/_libs/tslibs/parsing.pyx:652: DateParseError
+________ test_period_parse_weeks_positive[20121231-20130106-expected7] _________
+
+datestring = '20121231-20130106'
+expected = ['2012-12-31/2013-01-06', 'W-SUN', '2012-12-31 00:00:00', '2013-01-06 23:59:59.999999999', 6, 1]
+
+    @pytest.mark.parametrize(
+        "datestring,expected", # expected = [str,freqstr,start_time,end_time,day_of_week,week]
+        [   # basic input
+            ('20250106-20250112',['2025-01-06/2025-01-12', 'W-SUN', '2025-01-06 00:00:00', '2025-01-12 23:59:59.999999999', 6, 2]), # mon-sun
+            # week turning over
+            ('20250101-20250107',['2025-01-01/2025-01-07', 'W-TUE', '2025-01-01 00:00:00', '2025-01-07 23:59:59.999999999', 1, 2]), # wed-tue
+            ('20250112-20250118',['2025-01-12/2025-01-18', 'W-SAT', '2025-01-12 00:00:00', '2025-01-18 23:59:59.999999999', 5, 3]), # sun-sat
+    
+            # month turning over
+            ('20250228-20250306',['2025-02-28/2025-03-06', 'W-THU', '2025-02-28 00:00:00', '2025-03-06 23:59:59.999999999', 3, 10]), # fri-thur
+            ('20251125-20251201',['2025-11-25/2025-12-01', 'W-MON', '2025-11-25 00:00:00','2025-12-01 23:59:59.999999999', 0, 49]), # tue-mon
+    
+            # year turning over
+            ('19991231-20000106', ['1999-12-31/2000-01-06', 'W-THU', '1999-12-31 00:00:00', '2000-01-06 23:59:59.999999999', 3, 1]), # fri-thur
+            ('20161229-20170104', ['2016-12-29/2017-01-04', 'W-WED', '2016-12-29 00:00:00', '2017-01-04 23:59:59.999999999', 2, 1]), # thur-wed
+            ('20121231-20130106', ['2012-12-31/2013-01-06', 'W-SUN', '2012-12-31 00:00:00', '2013-01-06 23:59:59.999999999', 6, 1]), # mon-sun
+            # leap day
+            ('20240226-20240303', ['2024-02-26/2024-03-03', 'W-SUN', '2024-02-26 00:00:00', '2024-03-03 23:59:59.999999999', 6, 9]), # mon-sun
+        ],
+    )
+    def test_period_parse_weeks_positive(datestring,expected):
+        """
+        Tests correct attributes for Period objects created from the
+        dedicated YYYYMMDD-YYYYMMDD week format with valid inputs.
+        """
+>       p = pd.Period(datestring)
+
+pandas/tests/tslibs/test_period.py:255: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pandas/_libs/tslibs/period.pyx:2972: in pandas._libs.tslibs.period.Period.__new__
+    raise err
+pandas/_libs/tslibs/period.pyx:2964: in pandas._libs.tslibs.period.Period.__new__
+    dt, reso = parse_datetime_string_with_reso(value, freqstr)
+pandas/_libs/tslibs/parsing.pyx:428: in pandas._libs.tslibs.parsing.parse_datetime_string_with_reso
+    parsed = dateutil_parse(date_string, _DEFAULT_DATETIME,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise DateParseError(
+E   pandas._libs.tslibs.parsing.DateParseError: Unknown datetime string format, unable to parse: 20121231-20130106
+
+pandas/_libs/tslibs/parsing.pyx:652: DateParseError
+________ test_period_parse_weeks_positive[20240226-20240303-expected8] _________
+
+datestring = '20240226-20240303'
+expected = ['2024-02-26/2024-03-03', 'W-SUN', '2024-02-26 00:00:00', '2024-03-03 23:59:59.999999999', 6, 9]
+
+    @pytest.mark.parametrize(
+        "datestring,expected", # expected = [str,freqstr,start_time,end_time,day_of_week,week]
+        [   # basic input
+            ('20250106-20250112',['2025-01-06/2025-01-12', 'W-SUN', '2025-01-06 00:00:00', '2025-01-12 23:59:59.999999999', 6, 2]), # mon-sun
+            # week turning over
+            ('20250101-20250107',['2025-01-01/2025-01-07', 'W-TUE', '2025-01-01 00:00:00', '2025-01-07 23:59:59.999999999', 1, 2]), # wed-tue
+            ('20250112-20250118',['2025-01-12/2025-01-18', 'W-SAT', '2025-01-12 00:00:00', '2025-01-18 23:59:59.999999999', 5, 3]), # sun-sat
+    
+            # month turning over
+            ('20250228-20250306',['2025-02-28/2025-03-06', 'W-THU', '2025-02-28 00:00:00', '2025-03-06 23:59:59.999999999', 3, 10]), # fri-thur
+            ('20251125-20251201',['2025-11-25/2025-12-01', 'W-MON', '2025-11-25 00:00:00','2025-12-01 23:59:59.999999999', 0, 49]), # tue-mon
+    
+            # year turning over
+            ('19991231-20000106', ['1999-12-31/2000-01-06', 'W-THU', '1999-12-31 00:00:00', '2000-01-06 23:59:59.999999999', 3, 1]), # fri-thur
+            ('20161229-20170104', ['2016-12-29/2017-01-04', 'W-WED', '2016-12-29 00:00:00', '2017-01-04 23:59:59.999999999', 2, 1]), # thur-wed
+            ('20121231-20130106', ['2012-12-31/2013-01-06', 'W-SUN', '2012-12-31 00:00:00', '2013-01-06 23:59:59.999999999', 6, 1]), # mon-sun
+            # leap day
+            ('20240226-20240303', ['2024-02-26/2024-03-03', 'W-SUN', '2024-02-26 00:00:00', '2024-03-03 23:59:59.999999999', 6, 9]), # mon-sun
+        ],
+    )
+    def test_period_parse_weeks_positive(datestring,expected):
+        """
+        Tests correct attributes for Period objects created from the
+        dedicated YYYYMMDD-YYYYMMDD week format with valid inputs.
+        """
+>       p = pd.Period(datestring)
+
+pandas/tests/tslibs/test_period.py:255: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pandas/_libs/tslibs/period.pyx:2972: in pandas._libs.tslibs.period.Period.__new__
+    raise err
+pandas/_libs/tslibs/period.pyx:2964: in pandas._libs.tslibs.period.Period.__new__
+    dt, reso = parse_datetime_string_with_reso(value, freqstr)
+pandas/_libs/tslibs/parsing.pyx:428: in pandas._libs.tslibs.parsing.parse_datetime_string_with_reso
+    parsed = dateutil_parse(date_string, _DEFAULT_DATETIME,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise DateParseError(
+E   pandas._libs.tslibs.parsing.DateParseError: Unknown datetime string format, unable to parse: 20240226-20240303
+
+pandas/_libs/tslibs/parsing.pyx:652: DateParseError
+____________ test_period_parse_weeks_equivalent[20250106-20250112] _____________
+
+datestring = '20250106-20250112'
+
+    @pytest.mark.parametrize(
+        "datestring",
+        [   # basic input
+            '20250106-20250112', # mon-sun
+            # week turning over
+            '20250101-20250107', # wed-tue
+            '20250112-20250118', # sun-sat
+    
+            # month turning over
+            '20250228-20250306', # fri-thur
+            '20251125-20251201', # tue-mon
+    
+            # year turning over
+            '19991231-20000106',
+            '20161229-20170104',
+            '20121231-20130106',
+        ],
+    )
+    def test_period_parse_weeks_equivalent(datestring):
+        """
+        Checks that string representation of objects created with the
+        YYYYMMDD-YYYYMMDD format can successfully be fed back into Period
+        to create the equivalent week period.
+        """
+>       p = pd.Period(datestring)
+
+pandas/tests/tslibs/test_period.py:287: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pandas/_libs/tslibs/period.pyx:2972: in pandas._libs.tslibs.period.Period.__new__
+    raise err
+pandas/_libs/tslibs/period.pyx:2964: in pandas._libs.tslibs.period.Period.__new__
+    dt, reso = parse_datetime_string_with_reso(value, freqstr)
+pandas/_libs/tslibs/parsing.pyx:428: in pandas._libs.tslibs.parsing.parse_datetime_string_with_reso
+    parsed = dateutil_parse(date_string, _DEFAULT_DATETIME,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise DateParseError(
+E   pandas._libs.tslibs.parsing.DateParseError: Unknown datetime string format, unable to parse: 20250106-20250112
+
+pandas/_libs/tslibs/parsing.pyx:652: DateParseError
+____________ test_period_parse_weeks_equivalent[20250101-20250107] _____________
+
+datestring = '20250101-20250107'
+
+    @pytest.mark.parametrize(
+        "datestring",
+        [   # basic input
+            '20250106-20250112', # mon-sun
+            # week turning over
+            '20250101-20250107', # wed-tue
+            '20250112-20250118', # sun-sat
+    
+            # month turning over
+            '20250228-20250306', # fri-thur
+            '20251125-20251201', # tue-mon
+    
+            # year turning over
+            '19991231-20000106',
+            '20161229-20170104',
+            '20121231-20130106',
+        ],
+    )
+    def test_period_parse_weeks_equivalent(datestring):
+        """
+        Checks that string representation of objects created with the
+        YYYYMMDD-YYYYMMDD format can successfully be fed back into Period
+        to create the equivalent week period.
+        """
+>       p = pd.Period(datestring)
+
+pandas/tests/tslibs/test_period.py:287: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pandas/_libs/tslibs/period.pyx:2972: in pandas._libs.tslibs.period.Period.__new__
+    raise err
+pandas/_libs/tslibs/period.pyx:2964: in pandas._libs.tslibs.period.Period.__new__
+    dt, reso = parse_datetime_string_with_reso(value, freqstr)
+pandas/_libs/tslibs/parsing.pyx:428: in pandas._libs.tslibs.parsing.parse_datetime_string_with_reso
+    parsed = dateutil_parse(date_string, _DEFAULT_DATETIME,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise DateParseError(
+E   pandas._libs.tslibs.parsing.DateParseError: Unknown datetime string format, unable to parse: 20250101-20250107
+
+pandas/_libs/tslibs/parsing.pyx:652: DateParseError
+____________ test_period_parse_weeks_equivalent[20250112-20250118] _____________
+
+datestring = '20250112-20250118'
+
+    @pytest.mark.parametrize(
+        "datestring",
+        [   # basic input
+            '20250106-20250112', # mon-sun
+            # week turning over
+            '20250101-20250107', # wed-tue
+            '20250112-20250118', # sun-sat
+    
+            # month turning over
+            '20250228-20250306', # fri-thur
+            '20251125-20251201', # tue-mon
+    
+            # year turning over
+            '19991231-20000106',
+            '20161229-20170104',
+            '20121231-20130106',
+        ],
+    )
+    def test_period_parse_weeks_equivalent(datestring):
+        """
+        Checks that string representation of objects created with the
+        YYYYMMDD-YYYYMMDD format can successfully be fed back into Period
+        to create the equivalent week period.
+        """
+>       p = pd.Period(datestring)
+
+pandas/tests/tslibs/test_period.py:287: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pandas/_libs/tslibs/period.pyx:2972: in pandas._libs.tslibs.period.Period.__new__
+    raise err
+pandas/_libs/tslibs/period.pyx:2964: in pandas._libs.tslibs.period.Period.__new__
+    dt, reso = parse_datetime_string_with_reso(value, freqstr)
+pandas/_libs/tslibs/parsing.pyx:428: in pandas._libs.tslibs.parsing.parse_datetime_string_with_reso
+    parsed = dateutil_parse(date_string, _DEFAULT_DATETIME,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise DateParseError(
+E   pandas._libs.tslibs.parsing.DateParseError: Unknown datetime string format, unable to parse: 20250112-20250118
+
+pandas/_libs/tslibs/parsing.pyx:652: DateParseError
+____________ test_period_parse_weeks_equivalent[20250228-20250306] _____________
+
+datestring = '20250228-20250306'
+
+    @pytest.mark.parametrize(
+        "datestring",
+        [   # basic input
+            '20250106-20250112', # mon-sun
+            # week turning over
+            '20250101-20250107', # wed-tue
+            '20250112-20250118', # sun-sat
+    
+            # month turning over
+            '20250228-20250306', # fri-thur
+            '20251125-20251201', # tue-mon
+    
+            # year turning over
+            '19991231-20000106',
+            '20161229-20170104',
+            '20121231-20130106',
+        ],
+    )
+    def test_period_parse_weeks_equivalent(datestring):
+        """
+        Checks that string representation of objects created with the
+        YYYYMMDD-YYYYMMDD format can successfully be fed back into Period
+        to create the equivalent week period.
+        """
+>       p = pd.Period(datestring)
+
+pandas/tests/tslibs/test_period.py:287: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pandas/_libs/tslibs/period.pyx:2972: in pandas._libs.tslibs.period.Period.__new__
+    raise err
+pandas/_libs/tslibs/period.pyx:2964: in pandas._libs.tslibs.period.Period.__new__
+    dt, reso = parse_datetime_string_with_reso(value, freqstr)
+pandas/_libs/tslibs/parsing.pyx:428: in pandas._libs.tslibs.parsing.parse_datetime_string_with_reso
+    parsed = dateutil_parse(date_string, _DEFAULT_DATETIME,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise DateParseError(
+E   pandas._libs.tslibs.parsing.DateParseError: Unknown datetime string format, unable to parse: 20250228-20250306
+
+pandas/_libs/tslibs/parsing.pyx:652: DateParseError
+____________ test_period_parse_weeks_equivalent[20251125-20251201] _____________
+
+datestring = '20251125-20251201'
+
+    @pytest.mark.parametrize(
+        "datestring",
+        [   # basic input
+            '20250106-20250112', # mon-sun
+            # week turning over
+            '20250101-20250107', # wed-tue
+            '20250112-20250118', # sun-sat
+    
+            # month turning over
+            '20250228-20250306', # fri-thur
+            '20251125-20251201', # tue-mon
+    
+            # year turning over
+            '19991231-20000106',
+            '20161229-20170104',
+            '20121231-20130106',
+        ],
+    )
+    def test_period_parse_weeks_equivalent(datestring):
+        """
+        Checks that string representation of objects created with the
+        YYYYMMDD-YYYYMMDD format can successfully be fed back into Period
+        to create the equivalent week period.
+        """
+>       p = pd.Period(datestring)
+
+pandas/tests/tslibs/test_period.py:287: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pandas/_libs/tslibs/period.pyx:2972: in pandas._libs.tslibs.period.Period.__new__
+    raise err
+pandas/_libs/tslibs/period.pyx:2964: in pandas._libs.tslibs.period.Period.__new__
+    dt, reso = parse_datetime_string_with_reso(value, freqstr)
+pandas/_libs/tslibs/parsing.pyx:428: in pandas._libs.tslibs.parsing.parse_datetime_string_with_reso
+    parsed = dateutil_parse(date_string, _DEFAULT_DATETIME,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise DateParseError(
+E   pandas._libs.tslibs.parsing.DateParseError: Unknown datetime string format, unable to parse: 20251125-20251201
+
+pandas/_libs/tslibs/parsing.pyx:652: DateParseError
+____________ test_period_parse_weeks_equivalent[19991231-20000106] _____________
+
+datestring = '19991231-20000106'
+
+    @pytest.mark.parametrize(
+        "datestring",
+        [   # basic input
+            '20250106-20250112', # mon-sun
+            # week turning over
+            '20250101-20250107', # wed-tue
+            '20250112-20250118', # sun-sat
+    
+            # month turning over
+            '20250228-20250306', # fri-thur
+            '20251125-20251201', # tue-mon
+    
+            # year turning over
+            '19991231-20000106',
+            '20161229-20170104',
+            '20121231-20130106',
+        ],
+    )
+    def test_period_parse_weeks_equivalent(datestring):
+        """
+        Checks that string representation of objects created with the
+        YYYYMMDD-YYYYMMDD format can successfully be fed back into Period
+        to create the equivalent week period.
+        """
+>       p = pd.Period(datestring)
+
+pandas/tests/tslibs/test_period.py:287: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pandas/_libs/tslibs/period.pyx:2972: in pandas._libs.tslibs.period.Period.__new__
+    raise err
+pandas/_libs/tslibs/period.pyx:2964: in pandas._libs.tslibs.period.Period.__new__
+    dt, reso = parse_datetime_string_with_reso(value, freqstr)
+pandas/_libs/tslibs/parsing.pyx:428: in pandas._libs.tslibs.parsing.parse_datetime_string_with_reso
+    parsed = dateutil_parse(date_string, _DEFAULT_DATETIME,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise DateParseError(
+E   pandas._libs.tslibs.parsing.DateParseError: Unknown datetime string format, unable to parse: 19991231-20000106
+
+pandas/_libs/tslibs/parsing.pyx:652: DateParseError
+____________ test_period_parse_weeks_equivalent[20161229-20170104] _____________
+
+datestring = '20161229-20170104'
+
+    @pytest.mark.parametrize(
+        "datestring",
+        [   # basic input
+            '20250106-20250112', # mon-sun
+            # week turning over
+            '20250101-20250107', # wed-tue
+            '20250112-20250118', # sun-sat
+    
+            # month turning over
+            '20250228-20250306', # fri-thur
+            '20251125-20251201', # tue-mon
+    
+            # year turning over
+            '19991231-20000106',
+            '20161229-20170104',
+            '20121231-20130106',
+        ],
+    )
+    def test_period_parse_weeks_equivalent(datestring):
+        """
+        Checks that string representation of objects created with the
+        YYYYMMDD-YYYYMMDD format can successfully be fed back into Period
+        to create the equivalent week period.
+        """
+>       p = pd.Period(datestring)
+
+pandas/tests/tslibs/test_period.py:287: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pandas/_libs/tslibs/period.pyx:2972: in pandas._libs.tslibs.period.Period.__new__
+    raise err
+pandas/_libs/tslibs/period.pyx:2964: in pandas._libs.tslibs.period.Period.__new__
+    dt, reso = parse_datetime_string_with_reso(value, freqstr)
+pandas/_libs/tslibs/parsing.pyx:428: in pandas._libs.tslibs.parsing.parse_datetime_string_with_reso
+    parsed = dateutil_parse(date_string, _DEFAULT_DATETIME,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise DateParseError(
+E   pandas._libs.tslibs.parsing.DateParseError: Unknown datetime string format, unable to parse: 20161229-20170104
+
+pandas/_libs/tslibs/parsing.pyx:652: DateParseError
+____________ test_period_parse_weeks_equivalent[20121231-20130106] _____________
+
+datestring = '20121231-20130106'
+
+    @pytest.mark.parametrize(
+        "datestring",
+        [   # basic input
+            '20250106-20250112', # mon-sun
+            # week turning over
+            '20250101-20250107', # wed-tue
+            '20250112-20250118', # sun-sat
+    
+            # month turning over
+            '20250228-20250306', # fri-thur
+            '20251125-20251201', # tue-mon
+    
+            # year turning over
+            '19991231-20000106',
+            '20161229-20170104',
+            '20121231-20130106',
+        ],
+    )
+    def test_period_parse_weeks_equivalent(datestring):
+        """
+        Checks that string representation of objects created with the
+        YYYYMMDD-YYYYMMDD format can successfully be fed back into Period
+        to create the equivalent week period.
+        """
+>       p = pd.Period(datestring)
+
+pandas/tests/tslibs/test_period.py:287: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pandas/_libs/tslibs/period.pyx:2972: in pandas._libs.tslibs.period.Period.__new__
+    raise err
+pandas/_libs/tslibs/period.pyx:2964: in pandas._libs.tslibs.period.Period.__new__
+    dt, reso = parse_datetime_string_with_reso(value, freqstr)
+pandas/_libs/tslibs/parsing.pyx:428: in pandas._libs.tslibs.parsing.parse_datetime_string_with_reso
+    parsed = dateutil_parse(date_string, _DEFAULT_DATETIME,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise DateParseError(
+E   pandas._libs.tslibs.parsing.DateParseError: Unknown datetime string format, unable to parse: 20121231-20130106
+
+pandas/_libs/tslibs/parsing.pyx:652: DateParseError
+______________ test_period_parse_years_retro[1970-1973-expected0] ______________
+
+datestring = '1970-1973', expected = [[1970, 1971, 1972, 1973], 'Y-DEC']
+
+    @pytest.mark.parametrize(
+        "datestring,expected",
+        [
+            ("1970-1973", [[1970, 1971, 1972, 1973], 'Y-DEC']),
+            ("1867-1869", [[1867, 1868, 1869], 'Y-DEC']),
+            ("1849-1851", [[1849, 1850, 1851], 'Y-DEC']),
+            ("1959-1963", [[1959, 1960, 1961, 1962, 1963], 'Y-DEC'])
+    
+        ]
+    )
+    def test_period_parse_years_retro(datestring,expected):
+        """
+        Test intialisation of the Period object using the YYYY-YYYY format
+        The test is validated by looking at the frequency string parameter and that each value
+        in the timespan is initialised correctly
+        """
+>       p = pd.Period(datestring)
+
+pandas/tests/tslibs/test_period.py:342: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pandas/_libs/tslibs/period.pyx:2972: in pandas._libs.tslibs.period.Period.__new__
+    raise err
+pandas/_libs/tslibs/period.pyx:2964: in pandas._libs.tslibs.period.Period.__new__
+    dt, reso = parse_datetime_string_with_reso(value, freqstr)
+pandas/_libs/tslibs/parsing.pyx:428: in pandas._libs.tslibs.parsing.parse_datetime_string_with_reso
+    parsed = dateutil_parse(date_string, _DEFAULT_DATETIME,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise DateParseError(
+E   pandas._libs.tslibs.parsing.DateParseError: Unknown datetime string format, unable to parse: 1970-1973
+
+pandas/_libs/tslibs/parsing.pyx:652: DateParseError
+______________ test_period_parse_years_retro[1867-1869-expected1] ______________
+
+datestring = '1867-1869', expected = [[1867, 1868, 1869], 'Y-DEC']
+
+    @pytest.mark.parametrize(
+        "datestring,expected",
+        [
+            ("1970-1973", [[1970, 1971, 1972, 1973], 'Y-DEC']),
+            ("1867-1869", [[1867, 1868, 1869], 'Y-DEC']),
+            ("1849-1851", [[1849, 1850, 1851], 'Y-DEC']),
+            ("1959-1963", [[1959, 1960, 1961, 1962, 1963], 'Y-DEC'])
+    
+        ]
+    )
+    def test_period_parse_years_retro(datestring,expected):
+        """
+        Test intialisation of the Period object using the YYYY-YYYY format
+        The test is validated by looking at the frequency string parameter and that each value
+        in the timespan is initialised correctly
+        """
+>       p = pd.Period(datestring)
+
+pandas/tests/tslibs/test_period.py:342: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pandas/_libs/tslibs/period.pyx:2972: in pandas._libs.tslibs.period.Period.__new__
+    raise err
+pandas/_libs/tslibs/period.pyx:2964: in pandas._libs.tslibs.period.Period.__new__
+    dt, reso = parse_datetime_string_with_reso(value, freqstr)
+pandas/_libs/tslibs/parsing.pyx:428: in pandas._libs.tslibs.parsing.parse_datetime_string_with_reso
+    parsed = dateutil_parse(date_string, _DEFAULT_DATETIME,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise DateParseError(
+E   pandas._libs.tslibs.parsing.DateParseError: Unknown datetime string format, unable to parse: 1867-1869
+
+pandas/_libs/tslibs/parsing.pyx:652: DateParseError
+______________ test_period_parse_years_retro[1849-1851-expected2] ______________
+
+datestring = '1849-1851', expected = [[1849, 1850, 1851], 'Y-DEC']
+
+    @pytest.mark.parametrize(
+        "datestring,expected",
+        [
+            ("1970-1973", [[1970, 1971, 1972, 1973], 'Y-DEC']),
+            ("1867-1869", [[1867, 1868, 1869], 'Y-DEC']),
+            ("1849-1851", [[1849, 1850, 1851], 'Y-DEC']),
+            ("1959-1963", [[1959, 1960, 1961, 1962, 1963], 'Y-DEC'])
+    
+        ]
+    )
+    def test_period_parse_years_retro(datestring,expected):
+        """
+        Test intialisation of the Period object using the YYYY-YYYY format
+        The test is validated by looking at the frequency string parameter and that each value
+        in the timespan is initialised correctly
+        """
+>       p = pd.Period(datestring)
+
+pandas/tests/tslibs/test_period.py:342: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pandas/_libs/tslibs/period.pyx:2972: in pandas._libs.tslibs.period.Period.__new__
+    raise err
+pandas/_libs/tslibs/period.pyx:2964: in pandas._libs.tslibs.period.Period.__new__
+    dt, reso = parse_datetime_string_with_reso(value, freqstr)
+pandas/_libs/tslibs/parsing.pyx:428: in pandas._libs.tslibs.parsing.parse_datetime_string_with_reso
+    parsed = dateutil_parse(date_string, _DEFAULT_DATETIME,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise DateParseError(
+E   pandas._libs.tslibs.parsing.DateParseError: Unknown datetime string format, unable to parse: 1849-1851
+
+pandas/_libs/tslibs/parsing.pyx:652: DateParseError
+______________ test_period_parse_years_retro[1959-1963-expected3] ______________
+
+datestring = '1959-1963', expected = [[1959, 1960, 1961, 1962, 1963], 'Y-DEC']
+
+    @pytest.mark.parametrize(
+        "datestring,expected",
+        [
+            ("1970-1973", [[1970, 1971, 1972, 1973], 'Y-DEC']),
+            ("1867-1869", [[1867, 1868, 1869], 'Y-DEC']),
+            ("1849-1851", [[1849, 1850, 1851], 'Y-DEC']),
+            ("1959-1963", [[1959, 1960, 1961, 1962, 1963], 'Y-DEC'])
+    
+        ]
+    )
+    def test_period_parse_years_retro(datestring,expected):
+        """
+        Test intialisation of the Period object using the YYYY-YYYY format
+        The test is validated by looking at the frequency string parameter and that each value
+        in the timespan is initialised correctly
+        """
+>       p = pd.Period(datestring)
+
+pandas/tests/tslibs/test_period.py:342: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pandas/_libs/tslibs/period.pyx:2972: in pandas._libs.tslibs.period.Period.__new__
+    raise err
+pandas/_libs/tslibs/period.pyx:2964: in pandas._libs.tslibs.period.Period.__new__
+    dt, reso = parse_datetime_string_with_reso(value, freqstr)
+pandas/_libs/tslibs/parsing.pyx:428: in pandas._libs.tslibs.parsing.parse_datetime_string_with_reso
+    parsed = dateutil_parse(date_string, _DEFAULT_DATETIME,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise DateParseError(
+E   pandas._libs.tslibs.parsing.DateParseError: Unknown datetime string format, unable to parse: 1959-1963
+
+pandas/_libs/tslibs/parsing.pyx:652: DateParseError
+__________ test_period_parse_quarters_retro[1960Q3-1961Q1-expected0] ___________
+
+datestring = '1960Q3-1961Q1'
+expected = [[1960, 1960, 1961], [3, 4, 1], 'Q-DEC']
+
+    @pytest.mark.parametrize(
+        "datestring,expected",
+        [
+            # Test year switch in 1960s
+            ("1960Q3-1961Q1", [[1960, 1960, 1961], [3, 4, 1], 'Q-DEC']),
+            # Test year switch in 1830s
+            ("1830Q1-1831Q2", [[1830, 1830, 1830, 1830, 1831, 1831], [1, 2, 3, 4, 1, 2], 'Q-DEC']),
+            # Test year switch in 1980s
+            ("1980Q4-1981Q3", [[1980, 1981, 1981, 1981], [4, 1, 2, 3], 'Q-DEC']),
+            # Test year switch in 1850s
+            ("1850Q2-1851Q1", [[1850, 1850, 1850, 1851], [2, 3, 4, 1], 'Q-DEC']),
+            # Test dacade switch in 1800s
+            ("1859Q2-1860Q1", [[1859, 1859, 1859, 1860], [2, 3, 4, 1], 'Q-DEC']),
+            # Test dacade switch in 1900s
+            ("1929Q3-1930Q2", [[1929, 1929, 1930, 1930], [3, 4, 1, 2], 'Q-DEC'])
+        ],
+    )
+    def test_period_parse_quarters_retro(datestring,expected):
+        """
+        Test Quarter format YYYYQA-YYYYQB for Period() object initialisation.
+        We validate the test by looking at the year and quarter of each value ntry in the timespan
+        """
+>       p = pd.Period(datestring)
+
+pandas/tests/tslibs/test_period.py:368: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pandas/_libs/tslibs/period.pyx:2972: in pandas._libs.tslibs.period.Period.__new__
+    raise err
+pandas/_libs/tslibs/period.pyx:2964: in pandas._libs.tslibs.period.Period.__new__
+    dt, reso = parse_datetime_string_with_reso(value, freqstr)
+pandas/_libs/tslibs/parsing.pyx:428: in pandas._libs.tslibs.parsing.parse_datetime_string_with_reso
+    parsed = dateutil_parse(date_string, _DEFAULT_DATETIME,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise DateParseError(
+E   pandas._libs.tslibs.parsing.DateParseError: Unknown datetime string format, unable to parse: 1960Q3-1961Q1
+
+pandas/_libs/tslibs/parsing.pyx:652: DateParseError
+__________ test_period_parse_quarters_retro[1830Q1-1831Q2-expected1] ___________
+
+datestring = '1830Q1-1831Q2'
+expected = [[1830, 1830, 1830, 1830, 1831, 1831], [1, 2, 3, 4, 1, 2], 'Q-DEC']
+
+    @pytest.mark.parametrize(
+        "datestring,expected",
+        [
+            # Test year switch in 1960s
+            ("1960Q3-1961Q1", [[1960, 1960, 1961], [3, 4, 1], 'Q-DEC']),
+            # Test year switch in 1830s
+            ("1830Q1-1831Q2", [[1830, 1830, 1830, 1830, 1831, 1831], [1, 2, 3, 4, 1, 2], 'Q-DEC']),
+            # Test year switch in 1980s
+            ("1980Q4-1981Q3", [[1980, 1981, 1981, 1981], [4, 1, 2, 3], 'Q-DEC']),
+            # Test year switch in 1850s
+            ("1850Q2-1851Q1", [[1850, 1850, 1850, 1851], [2, 3, 4, 1], 'Q-DEC']),
+            # Test dacade switch in 1800s
+            ("1859Q2-1860Q1", [[1859, 1859, 1859, 1860], [2, 3, 4, 1], 'Q-DEC']),
+            # Test dacade switch in 1900s
+            ("1929Q3-1930Q2", [[1929, 1929, 1930, 1930], [3, 4, 1, 2], 'Q-DEC'])
+        ],
+    )
+    def test_period_parse_quarters_retro(datestring,expected):
+        """
+        Test Quarter format YYYYQA-YYYYQB for Period() object initialisation.
+        We validate the test by looking at the year and quarter of each value ntry in the timespan
+        """
+>       p = pd.Period(datestring)
+
+pandas/tests/tslibs/test_period.py:368: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pandas/_libs/tslibs/period.pyx:2972: in pandas._libs.tslibs.period.Period.__new__
+    raise err
+pandas/_libs/tslibs/period.pyx:2964: in pandas._libs.tslibs.period.Period.__new__
+    dt, reso = parse_datetime_string_with_reso(value, freqstr)
+pandas/_libs/tslibs/parsing.pyx:428: in pandas._libs.tslibs.parsing.parse_datetime_string_with_reso
+    parsed = dateutil_parse(date_string, _DEFAULT_DATETIME,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise DateParseError(
+E   pandas._libs.tslibs.parsing.DateParseError: Unknown datetime string format, unable to parse: 1830Q1-1831Q2
+
+pandas/_libs/tslibs/parsing.pyx:652: DateParseError
+__________ test_period_parse_quarters_retro[1980Q4-1981Q3-expected2] ___________
+
+datestring = '1980Q4-1981Q3'
+expected = [[1980, 1981, 1981, 1981], [4, 1, 2, 3], 'Q-DEC']
+
+    @pytest.mark.parametrize(
+        "datestring,expected",
+        [
+            # Test year switch in 1960s
+            ("1960Q3-1961Q1", [[1960, 1960, 1961], [3, 4, 1], 'Q-DEC']),
+            # Test year switch in 1830s
+            ("1830Q1-1831Q2", [[1830, 1830, 1830, 1830, 1831, 1831], [1, 2, 3, 4, 1, 2], 'Q-DEC']),
+            # Test year switch in 1980s
+            ("1980Q4-1981Q3", [[1980, 1981, 1981, 1981], [4, 1, 2, 3], 'Q-DEC']),
+            # Test year switch in 1850s
+            ("1850Q2-1851Q1", [[1850, 1850, 1850, 1851], [2, 3, 4, 1], 'Q-DEC']),
+            # Test dacade switch in 1800s
+            ("1859Q2-1860Q1", [[1859, 1859, 1859, 1860], [2, 3, 4, 1], 'Q-DEC']),
+            # Test dacade switch in 1900s
+            ("1929Q3-1930Q2", [[1929, 1929, 1930, 1930], [3, 4, 1, 2], 'Q-DEC'])
+        ],
+    )
+    def test_period_parse_quarters_retro(datestring,expected):
+        """
+        Test Quarter format YYYYQA-YYYYQB for Period() object initialisation.
+        We validate the test by looking at the year and quarter of each value ntry in the timespan
+        """
+>       p = pd.Period(datestring)
+
+pandas/tests/tslibs/test_period.py:368: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pandas/_libs/tslibs/period.pyx:2972: in pandas._libs.tslibs.period.Period.__new__
+    raise err
+pandas/_libs/tslibs/period.pyx:2964: in pandas._libs.tslibs.period.Period.__new__
+    dt, reso = parse_datetime_string_with_reso(value, freqstr)
+pandas/_libs/tslibs/parsing.pyx:428: in pandas._libs.tslibs.parsing.parse_datetime_string_with_reso
+    parsed = dateutil_parse(date_string, _DEFAULT_DATETIME,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise DateParseError(
+E   pandas._libs.tslibs.parsing.DateParseError: Unknown datetime string format, unable to parse: 1980Q4-1981Q3
+
+pandas/_libs/tslibs/parsing.pyx:652: DateParseError
+__________ test_period_parse_quarters_retro[1850Q2-1851Q1-expected3] ___________
+
+datestring = '1850Q2-1851Q1'
+expected = [[1850, 1850, 1850, 1851], [2, 3, 4, 1], 'Q-DEC']
+
+    @pytest.mark.parametrize(
+        "datestring,expected",
+        [
+            # Test year switch in 1960s
+            ("1960Q3-1961Q1", [[1960, 1960, 1961], [3, 4, 1], 'Q-DEC']),
+            # Test year switch in 1830s
+            ("1830Q1-1831Q2", [[1830, 1830, 1830, 1830, 1831, 1831], [1, 2, 3, 4, 1, 2], 'Q-DEC']),
+            # Test year switch in 1980s
+            ("1980Q4-1981Q3", [[1980, 1981, 1981, 1981], [4, 1, 2, 3], 'Q-DEC']),
+            # Test year switch in 1850s
+            ("1850Q2-1851Q1", [[1850, 1850, 1850, 1851], [2, 3, 4, 1], 'Q-DEC']),
+            # Test dacade switch in 1800s
+            ("1859Q2-1860Q1", [[1859, 1859, 1859, 1860], [2, 3, 4, 1], 'Q-DEC']),
+            # Test dacade switch in 1900s
+            ("1929Q3-1930Q2", [[1929, 1929, 1930, 1930], [3, 4, 1, 2], 'Q-DEC'])
+        ],
+    )
+    def test_period_parse_quarters_retro(datestring,expected):
+        """
+        Test Quarter format YYYYQA-YYYYQB for Period() object initialisation.
+        We validate the test by looking at the year and quarter of each value ntry in the timespan
+        """
+>       p = pd.Period(datestring)
+
+pandas/tests/tslibs/test_period.py:368: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pandas/_libs/tslibs/period.pyx:2972: in pandas._libs.tslibs.period.Period.__new__
+    raise err
+pandas/_libs/tslibs/period.pyx:2964: in pandas._libs.tslibs.period.Period.__new__
+    dt, reso = parse_datetime_string_with_reso(value, freqstr)
+pandas/_libs/tslibs/parsing.pyx:428: in pandas._libs.tslibs.parsing.parse_datetime_string_with_reso
+    parsed = dateutil_parse(date_string, _DEFAULT_DATETIME,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise DateParseError(
+E   pandas._libs.tslibs.parsing.DateParseError: Unknown datetime string format, unable to parse: 1850Q2-1851Q1
+
+pandas/_libs/tslibs/parsing.pyx:652: DateParseError
+__________ test_period_parse_quarters_retro[1859Q2-1860Q1-expected4] ___________
+
+datestring = '1859Q2-1860Q1'
+expected = [[1859, 1859, 1859, 1860], [2, 3, 4, 1], 'Q-DEC']
+
+    @pytest.mark.parametrize(
+        "datestring,expected",
+        [
+            # Test year switch in 1960s
+            ("1960Q3-1961Q1", [[1960, 1960, 1961], [3, 4, 1], 'Q-DEC']),
+            # Test year switch in 1830s
+            ("1830Q1-1831Q2", [[1830, 1830, 1830, 1830, 1831, 1831], [1, 2, 3, 4, 1, 2], 'Q-DEC']),
+            # Test year switch in 1980s
+            ("1980Q4-1981Q3", [[1980, 1981, 1981, 1981], [4, 1, 2, 3], 'Q-DEC']),
+            # Test year switch in 1850s
+            ("1850Q2-1851Q1", [[1850, 1850, 1850, 1851], [2, 3, 4, 1], 'Q-DEC']),
+            # Test dacade switch in 1800s
+            ("1859Q2-1860Q1", [[1859, 1859, 1859, 1860], [2, 3, 4, 1], 'Q-DEC']),
+            # Test dacade switch in 1900s
+            ("1929Q3-1930Q2", [[1929, 1929, 1930, 1930], [3, 4, 1, 2], 'Q-DEC'])
+        ],
+    )
+    def test_period_parse_quarters_retro(datestring,expected):
+        """
+        Test Quarter format YYYYQA-YYYYQB for Period() object initialisation.
+        We validate the test by looking at the year and quarter of each value ntry in the timespan
+        """
+>       p = pd.Period(datestring)
+
+pandas/tests/tslibs/test_period.py:368: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pandas/_libs/tslibs/period.pyx:2972: in pandas._libs.tslibs.period.Period.__new__
+    raise err
+pandas/_libs/tslibs/period.pyx:2964: in pandas._libs.tslibs.period.Period.__new__
+    dt, reso = parse_datetime_string_with_reso(value, freqstr)
+pandas/_libs/tslibs/parsing.pyx:428: in pandas._libs.tslibs.parsing.parse_datetime_string_with_reso
+    parsed = dateutil_parse(date_string, _DEFAULT_DATETIME,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise DateParseError(
+E   pandas._libs.tslibs.parsing.DateParseError: Unknown datetime string format, unable to parse: 1859Q2-1860Q1
+
+pandas/_libs/tslibs/parsing.pyx:652: DateParseError
+__________ test_period_parse_quarters_retro[1929Q3-1930Q2-expected5] ___________
+
+datestring = '1929Q3-1930Q2'
+expected = [[1929, 1929, 1930, 1930], [3, 4, 1, 2], 'Q-DEC']
+
+    @pytest.mark.parametrize(
+        "datestring,expected",
+        [
+            # Test year switch in 1960s
+            ("1960Q3-1961Q1", [[1960, 1960, 1961], [3, 4, 1], 'Q-DEC']),
+            # Test year switch in 1830s
+            ("1830Q1-1831Q2", [[1830, 1830, 1830, 1830, 1831, 1831], [1, 2, 3, 4, 1, 2], 'Q-DEC']),
+            # Test year switch in 1980s
+            ("1980Q4-1981Q3", [[1980, 1981, 1981, 1981], [4, 1, 2, 3], 'Q-DEC']),
+            # Test year switch in 1850s
+            ("1850Q2-1851Q1", [[1850, 1850, 1850, 1851], [2, 3, 4, 1], 'Q-DEC']),
+            # Test dacade switch in 1800s
+            ("1859Q2-1860Q1", [[1859, 1859, 1859, 1860], [2, 3, 4, 1], 'Q-DEC']),
+            # Test dacade switch in 1900s
+            ("1929Q3-1930Q2", [[1929, 1929, 1930, 1930], [3, 4, 1, 2], 'Q-DEC'])
+        ],
+    )
+    def test_period_parse_quarters_retro(datestring,expected):
+        """
+        Test Quarter format YYYYQA-YYYYQB for Period() object initialisation.
+        We validate the test by looking at the year and quarter of each value ntry in the timespan
+        """
+>       p = pd.Period(datestring)
+
+pandas/tests/tslibs/test_period.py:368: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pandas/_libs/tslibs/period.pyx:2972: in pandas._libs.tslibs.period.Period.__new__
+    raise err
+pandas/_libs/tslibs/period.pyx:2964: in pandas._libs.tslibs.period.Period.__new__
+    dt, reso = parse_datetime_string_with_reso(value, freqstr)
+pandas/_libs/tslibs/parsing.pyx:428: in pandas._libs.tslibs.parsing.parse_datetime_string_with_reso
+    parsed = dateutil_parse(date_string, _DEFAULT_DATETIME,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise DateParseError(
+E   pandas._libs.tslibs.parsing.DateParseError: Unknown datetime string format, unable to parse: 1929Q3-1930Q2
+
+pandas/_libs/tslibs/parsing.pyx:652: DateParseError
+_______________ test_old_and_retro_periods[19171206-19171212-2] ________________
+
+datestring = '19171206-19171212', expected = 2
+
+    @pytest.mark.parametrize(
+        "datestring, expected",
+        [
+            #Finland's independence
+            ("19171206-19171212", 2),# From Thursday to Wednesday
+            #Year turning over in 1960s
+            ("19681230-19690105", 6),#From Monday to Sunday
+            #Leap day in 1800s
+            ("18640225-18640302", 2),# From Thursday to Wednesday
+            #Leap day in 1900s
+            ("19800226-19800303", 0),# From Tuesday to Monday
+            #Decade switch in 1800s
+            ("18191230-18200105",2),# Thursday to Wednesday
+            #Decade switch from 1940s to 1950s
+            ("19491228-19500103", 1)# Wednesday Tuesday
+        ],
+    )
+    def test_old_and_retro_periods(datestring, expected):
+        """
+        Test rcreating the period object using the YYYYMMDD-YYYYMMDD format.
+        We verify our test by looking at which day of the week we end on.
+        We test in two different centuries as well as edge cases where we have
+        a year shift or a decade shift.
+        """
+>       p = pd.Period(datestring)
+
+pandas/tests/tslibs/test_period.py:414: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pandas/_libs/tslibs/period.pyx:2972: in pandas._libs.tslibs.period.Period.__new__
+    raise err
+pandas/_libs/tslibs/period.pyx:2964: in pandas._libs.tslibs.period.Period.__new__
+    dt, reso = parse_datetime_string_with_reso(value, freqstr)
+pandas/_libs/tslibs/parsing.pyx:428: in pandas._libs.tslibs.parsing.parse_datetime_string_with_reso
+    parsed = dateutil_parse(date_string, _DEFAULT_DATETIME,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise DateParseError(
+E   pandas._libs.tslibs.parsing.DateParseError: Unknown datetime string format, unable to parse: 19171206-19171212
+
+pandas/_libs/tslibs/parsing.pyx:652: DateParseError
+_______________ test_old_and_retro_periods[19681230-19690105-6] ________________
+
+datestring = '19681230-19690105', expected = 6
+
+    @pytest.mark.parametrize(
+        "datestring, expected",
+        [
+            #Finland's independence
+            ("19171206-19171212", 2),# From Thursday to Wednesday
+            #Year turning over in 1960s
+            ("19681230-19690105", 6),#From Monday to Sunday
+            #Leap day in 1800s
+            ("18640225-18640302", 2),# From Thursday to Wednesday
+            #Leap day in 1900s
+            ("19800226-19800303", 0),# From Tuesday to Monday
+            #Decade switch in 1800s
+            ("18191230-18200105",2),# Thursday to Wednesday
+            #Decade switch from 1940s to 1950s
+            ("19491228-19500103", 1)# Wednesday Tuesday
+        ],
+    )
+    def test_old_and_retro_periods(datestring, expected):
+        """
+        Test rcreating the period object using the YYYYMMDD-YYYYMMDD format.
+        We verify our test by looking at which day of the week we end on.
+        We test in two different centuries as well as edge cases where we have
+        a year shift or a decade shift.
+        """
+>       p = pd.Period(datestring)
+
+pandas/tests/tslibs/test_period.py:414: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pandas/_libs/tslibs/period.pyx:2972: in pandas._libs.tslibs.period.Period.__new__
+    raise err
+pandas/_libs/tslibs/period.pyx:2964: in pandas._libs.tslibs.period.Period.__new__
+    dt, reso = parse_datetime_string_with_reso(value, freqstr)
+pandas/_libs/tslibs/parsing.pyx:428: in pandas._libs.tslibs.parsing.parse_datetime_string_with_reso
+    parsed = dateutil_parse(date_string, _DEFAULT_DATETIME,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise DateParseError(
+E   pandas._libs.tslibs.parsing.DateParseError: Unknown datetime string format, unable to parse: 19681230-19690105
+
+pandas/_libs/tslibs/parsing.pyx:652: DateParseError
+_______________ test_old_and_retro_periods[18640225-18640302-2] ________________
+
+datestring = '18640225-18640302', expected = 2
+
+    @pytest.mark.parametrize(
+        "datestring, expected",
+        [
+            #Finland's independence
+            ("19171206-19171212", 2),# From Thursday to Wednesday
+            #Year turning over in 1960s
+            ("19681230-19690105", 6),#From Monday to Sunday
+            #Leap day in 1800s
+            ("18640225-18640302", 2),# From Thursday to Wednesday
+            #Leap day in 1900s
+            ("19800226-19800303", 0),# From Tuesday to Monday
+            #Decade switch in 1800s
+            ("18191230-18200105",2),# Thursday to Wednesday
+            #Decade switch from 1940s to 1950s
+            ("19491228-19500103", 1)# Wednesday Tuesday
+        ],
+    )
+    def test_old_and_retro_periods(datestring, expected):
+        """
+        Test rcreating the period object using the YYYYMMDD-YYYYMMDD format.
+        We verify our test by looking at which day of the week we end on.
+        We test in two different centuries as well as edge cases where we have
+        a year shift or a decade shift.
+        """
+>       p = pd.Period(datestring)
+
+pandas/tests/tslibs/test_period.py:414: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pandas/_libs/tslibs/period.pyx:2972: in pandas._libs.tslibs.period.Period.__new__
+    raise err
+pandas/_libs/tslibs/period.pyx:2964: in pandas._libs.tslibs.period.Period.__new__
+    dt, reso = parse_datetime_string_with_reso(value, freqstr)
+pandas/_libs/tslibs/parsing.pyx:428: in pandas._libs.tslibs.parsing.parse_datetime_string_with_reso
+    parsed = dateutil_parse(date_string, _DEFAULT_DATETIME,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise DateParseError(
+E   pandas._libs.tslibs.parsing.DateParseError: Unknown datetime string format, unable to parse: 18640225-18640302
+
+pandas/_libs/tslibs/parsing.pyx:652: DateParseError
+_______________ test_old_and_retro_periods[19800226-19800303-0] ________________
+
+datestring = '19800226-19800303', expected = 0
+
+    @pytest.mark.parametrize(
+        "datestring, expected",
+        [
+            #Finland's independence
+            ("19171206-19171212", 2),# From Thursday to Wednesday
+            #Year turning over in 1960s
+            ("19681230-19690105", 6),#From Monday to Sunday
+            #Leap day in 1800s
+            ("18640225-18640302", 2),# From Thursday to Wednesday
+            #Leap day in 1900s
+            ("19800226-19800303", 0),# From Tuesday to Monday
+            #Decade switch in 1800s
+            ("18191230-18200105",2),# Thursday to Wednesday
+            #Decade switch from 1940s to 1950s
+            ("19491228-19500103", 1)# Wednesday Tuesday
+        ],
+    )
+    def test_old_and_retro_periods(datestring, expected):
+        """
+        Test rcreating the period object using the YYYYMMDD-YYYYMMDD format.
+        We verify our test by looking at which day of the week we end on.
+        We test in two different centuries as well as edge cases where we have
+        a year shift or a decade shift.
+        """
+>       p = pd.Period(datestring)
+
+pandas/tests/tslibs/test_period.py:414: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pandas/_libs/tslibs/period.pyx:2972: in pandas._libs.tslibs.period.Period.__new__
+    raise err
+pandas/_libs/tslibs/period.pyx:2964: in pandas._libs.tslibs.period.Period.__new__
+    dt, reso = parse_datetime_string_with_reso(value, freqstr)
+pandas/_libs/tslibs/parsing.pyx:428: in pandas._libs.tslibs.parsing.parse_datetime_string_with_reso
+    parsed = dateutil_parse(date_string, _DEFAULT_DATETIME,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise DateParseError(
+E   pandas._libs.tslibs.parsing.DateParseError: Unknown datetime string format, unable to parse: 19800226-19800303
+
+pandas/_libs/tslibs/parsing.pyx:652: DateParseError
+_______________ test_old_and_retro_periods[18191230-18200105-2] ________________
+
+datestring = '18191230-18200105', expected = 2
+
+    @pytest.mark.parametrize(
+        "datestring, expected",
+        [
+            #Finland's independence
+            ("19171206-19171212", 2),# From Thursday to Wednesday
+            #Year turning over in 1960s
+            ("19681230-19690105", 6),#From Monday to Sunday
+            #Leap day in 1800s
+            ("18640225-18640302", 2),# From Thursday to Wednesday
+            #Leap day in 1900s
+            ("19800226-19800303", 0),# From Tuesday to Monday
+            #Decade switch in 1800s
+            ("18191230-18200105",2),# Thursday to Wednesday
+            #Decade switch from 1940s to 1950s
+            ("19491228-19500103", 1)# Wednesday Tuesday
+        ],
+    )
+    def test_old_and_retro_periods(datestring, expected):
+        """
+        Test rcreating the period object using the YYYYMMDD-YYYYMMDD format.
+        We verify our test by looking at which day of the week we end on.
+        We test in two different centuries as well as edge cases where we have
+        a year shift or a decade shift.
+        """
+>       p = pd.Period(datestring)
+
+pandas/tests/tslibs/test_period.py:414: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pandas/_libs/tslibs/period.pyx:2972: in pandas._libs.tslibs.period.Period.__new__
+    raise err
+pandas/_libs/tslibs/period.pyx:2964: in pandas._libs.tslibs.period.Period.__new__
+    dt, reso = parse_datetime_string_with_reso(value, freqstr)
+pandas/_libs/tslibs/parsing.pyx:428: in pandas._libs.tslibs.parsing.parse_datetime_string_with_reso
+    parsed = dateutil_parse(date_string, _DEFAULT_DATETIME,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise DateParseError(
+E   pandas._libs.tslibs.parsing.DateParseError: Unknown datetime string format, unable to parse: 18191230-18200105
+
+pandas/_libs/tslibs/parsing.pyx:652: DateParseError
+_______________ test_old_and_retro_periods[19491228-19500103-1] ________________
+
+datestring = '19491228-19500103', expected = 1
+
+    @pytest.mark.parametrize(
+        "datestring, expected",
+        [
+            #Finland's independence
+            ("19171206-19171212", 2),# From Thursday to Wednesday
+            #Year turning over in 1960s
+            ("19681230-19690105", 6),#From Monday to Sunday
+            #Leap day in 1800s
+            ("18640225-18640302", 2),# From Thursday to Wednesday
+            #Leap day in 1900s
+            ("19800226-19800303", 0),# From Tuesday to Monday
+            #Decade switch in 1800s
+            ("18191230-18200105",2),# Thursday to Wednesday
+            #Decade switch from 1940s to 1950s
+            ("19491228-19500103", 1)# Wednesday Tuesday
+        ],
+    )
+    def test_old_and_retro_periods(datestring, expected):
+        """
+        Test rcreating the period object using the YYYYMMDD-YYYYMMDD format.
+        We verify our test by looking at which day of the week we end on.
+        We test in two different centuries as well as edge cases where we have
+        a year shift or a decade shift.
+        """
+>       p = pd.Period(datestring)
+
+pandas/tests/tslibs/test_period.py:414: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pandas/_libs/tslibs/period.pyx:2972: in pandas._libs.tslibs.period.Period.__new__
+    raise err
+pandas/_libs/tslibs/period.pyx:2964: in pandas._libs.tslibs.period.Period.__new__
+    dt, reso = parse_datetime_string_with_reso(value, freqstr)
+pandas/_libs/tslibs/parsing.pyx:428: in pandas._libs.tslibs.parsing.parse_datetime_string_with_reso
+    parsed = dateutil_parse(date_string, _DEFAULT_DATETIME,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise DateParseError(
+E   pandas._libs.tslibs.parsing.DateParseError: Unknown datetime string format, unable to parse: 19491228-19500103
+
+pandas/_libs/tslibs/parsing.pyx:652: DateParseError
+__ test_old_and_retro_periods_line_formatted_reinitialised[18690924-18690930] __
+
+datestring = '18690924-18690930'
+
+    @pytest.mark.parametrize(
+        "datestring",
+        [
+            # The black friday stock market week.
+            "18690924-18690930",
+            #Finland's independence
+            "19171206-19171212",
+            #Year turning over in 1960s
+            "19681230-19690105",
+            #Year turning over in 1970s
+            "19751229-19760104",
+            #Year turning over in 1990s
+            "19931231-19940106",
+            #Decade switch from 1940s to 1950s
+            "19491228-19500103",
+            #Decade switch in 1800s
+            "18191230-18200105",
+            #Year switch in 1800s
+            "18531229-18540104",
+            #Leap day in 1800s
+            "18640225-18640302",
+            #Leap day in 1900s
+            "19800226-19800303",
+        ],
+    )
+    def test_old_and_retro_periods_line_formatted_reinitialised(datestring):
+        """
+        Test re-creating the period object using the YYYYMMDD-YYYYMMDD format and making sure
+        we get the same object in return. We test in various edge cases such as 1900s and 1800s, decade switches,
+        as well as year swithes
+        """
+>       p = pd.Period(datestring)
+
+pandas/tests/tslibs/test_period.py:448: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pandas/_libs/tslibs/period.pyx:2972: in pandas._libs.tslibs.period.Period.__new__
+    raise err
+pandas/_libs/tslibs/period.pyx:2964: in pandas._libs.tslibs.period.Period.__new__
+    dt, reso = parse_datetime_string_with_reso(value, freqstr)
+pandas/_libs/tslibs/parsing.pyx:428: in pandas._libs.tslibs.parsing.parse_datetime_string_with_reso
+    parsed = dateutil_parse(date_string, _DEFAULT_DATETIME,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise DateParseError(
+E   pandas._libs.tslibs.parsing.DateParseError: Unknown datetime string format, unable to parse: 18690924-18690930
+
+pandas/_libs/tslibs/parsing.pyx:652: DateParseError
+__ test_old_and_retro_periods_line_formatted_reinitialised[19171206-19171212] __
+
+datestring = '19171206-19171212'
+
+    @pytest.mark.parametrize(
+        "datestring",
+        [
+            # The black friday stock market week.
+            "18690924-18690930",
+            #Finland's independence
+            "19171206-19171212",
+            #Year turning over in 1960s
+            "19681230-19690105",
+            #Year turning over in 1970s
+            "19751229-19760104",
+            #Year turning over in 1990s
+            "19931231-19940106",
+            #Decade switch from 1940s to 1950s
+            "19491228-19500103",
+            #Decade switch in 1800s
+            "18191230-18200105",
+            #Year switch in 1800s
+            "18531229-18540104",
+            #Leap day in 1800s
+            "18640225-18640302",
+            #Leap day in 1900s
+            "19800226-19800303",
+        ],
+    )
+    def test_old_and_retro_periods_line_formatted_reinitialised(datestring):
+        """
+        Test re-creating the period object using the YYYYMMDD-YYYYMMDD format and making sure
+        we get the same object in return. We test in various edge cases such as 1900s and 1800s, decade switches,
+        as well as year swithes
+        """
+>       p = pd.Period(datestring)
+
+pandas/tests/tslibs/test_period.py:448: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pandas/_libs/tslibs/period.pyx:2972: in pandas._libs.tslibs.period.Period.__new__
+    raise err
+pandas/_libs/tslibs/period.pyx:2964: in pandas._libs.tslibs.period.Period.__new__
+    dt, reso = parse_datetime_string_with_reso(value, freqstr)
+pandas/_libs/tslibs/parsing.pyx:428: in pandas._libs.tslibs.parsing.parse_datetime_string_with_reso
+    parsed = dateutil_parse(date_string, _DEFAULT_DATETIME,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise DateParseError(
+E   pandas._libs.tslibs.parsing.DateParseError: Unknown datetime string format, unable to parse: 19171206-19171212
+
+pandas/_libs/tslibs/parsing.pyx:652: DateParseError
+__ test_old_and_retro_periods_line_formatted_reinitialised[19681230-19690105] __
+
+datestring = '19681230-19690105'
+
+    @pytest.mark.parametrize(
+        "datestring",
+        [
+            # The black friday stock market week.
+            "18690924-18690930",
+            #Finland's independence
+            "19171206-19171212",
+            #Year turning over in 1960s
+            "19681230-19690105",
+            #Year turning over in 1970s
+            "19751229-19760104",
+            #Year turning over in 1990s
+            "19931231-19940106",
+            #Decade switch from 1940s to 1950s
+            "19491228-19500103",
+            #Decade switch in 1800s
+            "18191230-18200105",
+            #Year switch in 1800s
+            "18531229-18540104",
+            #Leap day in 1800s
+            "18640225-18640302",
+            #Leap day in 1900s
+            "19800226-19800303",
+        ],
+    )
+    def test_old_and_retro_periods_line_formatted_reinitialised(datestring):
+        """
+        Test re-creating the period object using the YYYYMMDD-YYYYMMDD format and making sure
+        we get the same object in return. We test in various edge cases such as 1900s and 1800s, decade switches,
+        as well as year swithes
+        """
+>       p = pd.Period(datestring)
+
+pandas/tests/tslibs/test_period.py:448: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pandas/_libs/tslibs/period.pyx:2972: in pandas._libs.tslibs.period.Period.__new__
+    raise err
+pandas/_libs/tslibs/period.pyx:2964: in pandas._libs.tslibs.period.Period.__new__
+    dt, reso = parse_datetime_string_with_reso(value, freqstr)
+pandas/_libs/tslibs/parsing.pyx:428: in pandas._libs.tslibs.parsing.parse_datetime_string_with_reso
+    parsed = dateutil_parse(date_string, _DEFAULT_DATETIME,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise DateParseError(
+E   pandas._libs.tslibs.parsing.DateParseError: Unknown datetime string format, unable to parse: 19681230-19690105
+
+pandas/_libs/tslibs/parsing.pyx:652: DateParseError
+__ test_old_and_retro_periods_line_formatted_reinitialised[19751229-19760104] __
+
+datestring = '19751229-19760104'
+
+    @pytest.mark.parametrize(
+        "datestring",
+        [
+            # The black friday stock market week.
+            "18690924-18690930",
+            #Finland's independence
+            "19171206-19171212",
+            #Year turning over in 1960s
+            "19681230-19690105",
+            #Year turning over in 1970s
+            "19751229-19760104",
+            #Year turning over in 1990s
+            "19931231-19940106",
+            #Decade switch from 1940s to 1950s
+            "19491228-19500103",
+            #Decade switch in 1800s
+            "18191230-18200105",
+            #Year switch in 1800s
+            "18531229-18540104",
+            #Leap day in 1800s
+            "18640225-18640302",
+            #Leap day in 1900s
+            "19800226-19800303",
+        ],
+    )
+    def test_old_and_retro_periods_line_formatted_reinitialised(datestring):
+        """
+        Test re-creating the period object using the YYYYMMDD-YYYYMMDD format and making sure
+        we get the same object in return. We test in various edge cases such as 1900s and 1800s, decade switches,
+        as well as year swithes
+        """
+>       p = pd.Period(datestring)
+
+pandas/tests/tslibs/test_period.py:448: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pandas/_libs/tslibs/period.pyx:2972: in pandas._libs.tslibs.period.Period.__new__
+    raise err
+pandas/_libs/tslibs/period.pyx:2964: in pandas._libs.tslibs.period.Period.__new__
+    dt, reso = parse_datetime_string_with_reso(value, freqstr)
+pandas/_libs/tslibs/parsing.pyx:428: in pandas._libs.tslibs.parsing.parse_datetime_string_with_reso
+    parsed = dateutil_parse(date_string, _DEFAULT_DATETIME,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise DateParseError(
+E   pandas._libs.tslibs.parsing.DateParseError: Unknown datetime string format, unable to parse: 19751229-19760104
+
+pandas/_libs/tslibs/parsing.pyx:652: DateParseError
+__ test_old_and_retro_periods_line_formatted_reinitialised[19931231-19940106] __
+
+datestring = '19931231-19940106'
+
+    @pytest.mark.parametrize(
+        "datestring",
+        [
+            # The black friday stock market week.
+            "18690924-18690930",
+            #Finland's independence
+            "19171206-19171212",
+            #Year turning over in 1960s
+            "19681230-19690105",
+            #Year turning over in 1970s
+            "19751229-19760104",
+            #Year turning over in 1990s
+            "19931231-19940106",
+            #Decade switch from 1940s to 1950s
+            "19491228-19500103",
+            #Decade switch in 1800s
+            "18191230-18200105",
+            #Year switch in 1800s
+            "18531229-18540104",
+            #Leap day in 1800s
+            "18640225-18640302",
+            #Leap day in 1900s
+            "19800226-19800303",
+        ],
+    )
+    def test_old_and_retro_periods_line_formatted_reinitialised(datestring):
+        """
+        Test re-creating the period object using the YYYYMMDD-YYYYMMDD format and making sure
+        we get the same object in return. We test in various edge cases such as 1900s and 1800s, decade switches,
+        as well as year swithes
+        """
+>       p = pd.Period(datestring)
+
+pandas/tests/tslibs/test_period.py:448: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pandas/_libs/tslibs/period.pyx:2972: in pandas._libs.tslibs.period.Period.__new__
+    raise err
+pandas/_libs/tslibs/period.pyx:2964: in pandas._libs.tslibs.period.Period.__new__
+    dt, reso = parse_datetime_string_with_reso(value, freqstr)
+pandas/_libs/tslibs/parsing.pyx:428: in pandas._libs.tslibs.parsing.parse_datetime_string_with_reso
+    parsed = dateutil_parse(date_string, _DEFAULT_DATETIME,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise DateParseError(
+E   pandas._libs.tslibs.parsing.DateParseError: Unknown datetime string format, unable to parse: 19931231-19940106
+
+pandas/_libs/tslibs/parsing.pyx:652: DateParseError
+__ test_old_and_retro_periods_line_formatted_reinitialised[19491228-19500103] __
+
+datestring = '19491228-19500103'
+
+    @pytest.mark.parametrize(
+        "datestring",
+        [
+            # The black friday stock market week.
+            "18690924-18690930",
+            #Finland's independence
+            "19171206-19171212",
+            #Year turning over in 1960s
+            "19681230-19690105",
+            #Year turning over in 1970s
+            "19751229-19760104",
+            #Year turning over in 1990s
+            "19931231-19940106",
+            #Decade switch from 1940s to 1950s
+            "19491228-19500103",
+            #Decade switch in 1800s
+            "18191230-18200105",
+            #Year switch in 1800s
+            "18531229-18540104",
+            #Leap day in 1800s
+            "18640225-18640302",
+            #Leap day in 1900s
+            "19800226-19800303",
+        ],
+    )
+    def test_old_and_retro_periods_line_formatted_reinitialised(datestring):
+        """
+        Test re-creating the period object using the YYYYMMDD-YYYYMMDD format and making sure
+        we get the same object in return. We test in various edge cases such as 1900s and 1800s, decade switches,
+        as well as year swithes
+        """
+>       p = pd.Period(datestring)
+
+pandas/tests/tslibs/test_period.py:448: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pandas/_libs/tslibs/period.pyx:2972: in pandas._libs.tslibs.period.Period.__new__
+    raise err
+pandas/_libs/tslibs/period.pyx:2964: in pandas._libs.tslibs.period.Period.__new__
+    dt, reso = parse_datetime_string_with_reso(value, freqstr)
+pandas/_libs/tslibs/parsing.pyx:428: in pandas._libs.tslibs.parsing.parse_datetime_string_with_reso
+    parsed = dateutil_parse(date_string, _DEFAULT_DATETIME,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise DateParseError(
+E   pandas._libs.tslibs.parsing.DateParseError: Unknown datetime string format, unable to parse: 19491228-19500103
+
+pandas/_libs/tslibs/parsing.pyx:652: DateParseError
+__ test_old_and_retro_periods_line_formatted_reinitialised[18191230-18200105] __
+
+datestring = '18191230-18200105'
+
+    @pytest.mark.parametrize(
+        "datestring",
+        [
+            # The black friday stock market week.
+            "18690924-18690930",
+            #Finland's independence
+            "19171206-19171212",
+            #Year turning over in 1960s
+            "19681230-19690105",
+            #Year turning over in 1970s
+            "19751229-19760104",
+            #Year turning over in 1990s
+            "19931231-19940106",
+            #Decade switch from 1940s to 1950s
+            "19491228-19500103",
+            #Decade switch in 1800s
+            "18191230-18200105",
+            #Year switch in 1800s
+            "18531229-18540104",
+            #Leap day in 1800s
+            "18640225-18640302",
+            #Leap day in 1900s
+            "19800226-19800303",
+        ],
+    )
+    def test_old_and_retro_periods_line_formatted_reinitialised(datestring):
+        """
+        Test re-creating the period object using the YYYYMMDD-YYYYMMDD format and making sure
+        we get the same object in return. We test in various edge cases such as 1900s and 1800s, decade switches,
+        as well as year swithes
+        """
+>       p = pd.Period(datestring)
+
+pandas/tests/tslibs/test_period.py:448: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pandas/_libs/tslibs/period.pyx:2972: in pandas._libs.tslibs.period.Period.__new__
+    raise err
+pandas/_libs/tslibs/period.pyx:2964: in pandas._libs.tslibs.period.Period.__new__
+    dt, reso = parse_datetime_string_with_reso(value, freqstr)
+pandas/_libs/tslibs/parsing.pyx:428: in pandas._libs.tslibs.parsing.parse_datetime_string_with_reso
+    parsed = dateutil_parse(date_string, _DEFAULT_DATETIME,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise DateParseError(
+E   pandas._libs.tslibs.parsing.DateParseError: Unknown datetime string format, unable to parse: 18191230-18200105
+
+pandas/_libs/tslibs/parsing.pyx:652: DateParseError
+__ test_old_and_retro_periods_line_formatted_reinitialised[18531229-18540104] __
+
+datestring = '18531229-18540104'
+
+    @pytest.mark.parametrize(
+        "datestring",
+        [
+            # The black friday stock market week.
+            "18690924-18690930",
+            #Finland's independence
+            "19171206-19171212",
+            #Year turning over in 1960s
+            "19681230-19690105",
+            #Year turning over in 1970s
+            "19751229-19760104",
+            #Year turning over in 1990s
+            "19931231-19940106",
+            #Decade switch from 1940s to 1950s
+            "19491228-19500103",
+            #Decade switch in 1800s
+            "18191230-18200105",
+            #Year switch in 1800s
+            "18531229-18540104",
+            #Leap day in 1800s
+            "18640225-18640302",
+            #Leap day in 1900s
+            "19800226-19800303",
+        ],
+    )
+    def test_old_and_retro_periods_line_formatted_reinitialised(datestring):
+        """
+        Test re-creating the period object using the YYYYMMDD-YYYYMMDD format and making sure
+        we get the same object in return. We test in various edge cases such as 1900s and 1800s, decade switches,
+        as well as year swithes
+        """
+>       p = pd.Period(datestring)
+
+pandas/tests/tslibs/test_period.py:448: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pandas/_libs/tslibs/period.pyx:2972: in pandas._libs.tslibs.period.Period.__new__
+    raise err
+pandas/_libs/tslibs/period.pyx:2964: in pandas._libs.tslibs.period.Period.__new__
+    dt, reso = parse_datetime_string_with_reso(value, freqstr)
+pandas/_libs/tslibs/parsing.pyx:428: in pandas._libs.tslibs.parsing.parse_datetime_string_with_reso
+    parsed = dateutil_parse(date_string, _DEFAULT_DATETIME,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise DateParseError(
+E   pandas._libs.tslibs.parsing.DateParseError: Unknown datetime string format, unable to parse: 18531229-18540104
+
+pandas/_libs/tslibs/parsing.pyx:652: DateParseError
+__ test_old_and_retro_periods_line_formatted_reinitialised[18640225-18640302] __
+
+datestring = '18640225-18640302'
+
+    @pytest.mark.parametrize(
+        "datestring",
+        [
+            # The black friday stock market week.
+            "18690924-18690930",
+            #Finland's independence
+            "19171206-19171212",
+            #Year turning over in 1960s
+            "19681230-19690105",
+            #Year turning over in 1970s
+            "19751229-19760104",
+            #Year turning over in 1990s
+            "19931231-19940106",
+            #Decade switch from 1940s to 1950s
+            "19491228-19500103",
+            #Decade switch in 1800s
+            "18191230-18200105",
+            #Year switch in 1800s
+            "18531229-18540104",
+            #Leap day in 1800s
+            "18640225-18640302",
+            #Leap day in 1900s
+            "19800226-19800303",
+        ],
+    )
+    def test_old_and_retro_periods_line_formatted_reinitialised(datestring):
+        """
+        Test re-creating the period object using the YYYYMMDD-YYYYMMDD format and making sure
+        we get the same object in return. We test in various edge cases such as 1900s and 1800s, decade switches,
+        as well as year swithes
+        """
+>       p = pd.Period(datestring)
+
+pandas/tests/tslibs/test_period.py:448: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pandas/_libs/tslibs/period.pyx:2972: in pandas._libs.tslibs.period.Period.__new__
+    raise err
+pandas/_libs/tslibs/period.pyx:2964: in pandas._libs.tslibs.period.Period.__new__
+    dt, reso = parse_datetime_string_with_reso(value, freqstr)
+pandas/_libs/tslibs/parsing.pyx:428: in pandas._libs.tslibs.parsing.parse_datetime_string_with_reso
+    parsed = dateutil_parse(date_string, _DEFAULT_DATETIME,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise DateParseError(
+E   pandas._libs.tslibs.parsing.DateParseError: Unknown datetime string format, unable to parse: 18640225-18640302
+
+pandas/_libs/tslibs/parsing.pyx:652: DateParseError
+__ test_old_and_retro_periods_line_formatted_reinitialised[19800226-19800303] __
+
+datestring = '19800226-19800303'
+
+    @pytest.mark.parametrize(
+        "datestring",
+        [
+            # The black friday stock market week.
+            "18690924-18690930",
+            #Finland's independence
+            "19171206-19171212",
+            #Year turning over in 1960s
+            "19681230-19690105",
+            #Year turning over in 1970s
+            "19751229-19760104",
+            #Year turning over in 1990s
+            "19931231-19940106",
+            #Decade switch from 1940s to 1950s
+            "19491228-19500103",
+            #Decade switch in 1800s
+            "18191230-18200105",
+            #Year switch in 1800s
+            "18531229-18540104",
+            #Leap day in 1800s
+            "18640225-18640302",
+            #Leap day in 1900s
+            "19800226-19800303",
+        ],
+    )
+    def test_old_and_retro_periods_line_formatted_reinitialised(datestring):
+        """
+        Test re-creating the period object using the YYYYMMDD-YYYYMMDD format and making sure
+        we get the same object in return. We test in various edge cases such as 1900s and 1800s, decade switches,
+        as well as year swithes
+        """
+>       p = pd.Period(datestring)
+
+pandas/tests/tslibs/test_period.py:448: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pandas/_libs/tslibs/period.pyx:2972: in pandas._libs.tslibs.period.Period.__new__
+    raise err
+pandas/_libs/tslibs/period.pyx:2964: in pandas._libs.tslibs.period.Period.__new__
+    dt, reso = parse_datetime_string_with_reso(value, freqstr)
+pandas/_libs/tslibs/parsing.pyx:428: in pandas._libs.tslibs.parsing.parse_datetime_string_with_reso
+    parsed = dateutil_parse(date_string, _DEFAULT_DATETIME,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   raise DateParseError(
+E   pandas._libs.tslibs.parsing.DateParseError: Unknown datetime string format, unable to parse: 19800226-19800303
+
+pandas/_libs/tslibs/parsing.pyx:652: DateParseError
+---------------- generated xml file: /home/pandas/test-data.xml ----------------
+============================= slowest 30 durations =============================
+0.01s setup    pandas/tests/tslibs/test_period.py::test_intra_day_conversion_factors[D-h-24]
+
+(29 durations < 0.005s hidden.  Use -vv to show these durations.)
+=========================== short test summary info ============================
+FAILED pandas/tests/tslibs/test_period.py::test_period_with_ordinal_dates[2022-001-2022-01-01]
+FAILED pandas/tests/tslibs/test_period.py::test_period_with_ordinal_dates[2022-032-2022-02-01]
+FAILED pandas/tests/tslibs/test_period.py::test_period_with_ordinal_dates[2022-219-2022-08-07]
+FAILED pandas/tests/tslibs/test_period.py::test_period_with_ordinal_dates[2022-365-2022-12-31]
+FAILED pandas/tests/tslibs/test_period.py::test_period_with_ordinal_dates[2020-060-2020-02-29]
+FAILED pandas/tests/tslibs/test_period.py::test_period_with_ordinal_dates[2020-366-2020-12-31]
+FAILED pandas/tests/tslibs/test_period.py::test_period_with_ordinal_dates[2300-180-2300-06-29]
+FAILED pandas/tests/tslibs/test_period.py::test_period_with_ordinal_dates[2320-001-2320-01-01]
+FAILED pandas/tests/tslibs/test_period.py::test_period_with_ordinal_dates[2400-060-2400-02-29]
+FAILED pandas/tests/tslibs/test_period.py::test_period_with_ordinal_dates[2400-366-2400-12-31]
+FAILED pandas/tests/tslibs/test_period.py::test_period_with_24th_century_weeks[2301-01-01/2301-01-07-2301-01-07]
+FAILED pandas/tests/tslibs/test_period.py::test_period_with_24th_century_weeks[2350-06-25/2350-07-01-2350-07-01]
+FAILED pandas/tests/tslibs/test_period.py::test_period_parse_weeks_positive[20250106-20250112-expected0]
+FAILED pandas/tests/tslibs/test_period.py::test_period_parse_weeks_positive[20250101-20250107-expected1]
+FAILED pandas/tests/tslibs/test_period.py::test_period_parse_weeks_positive[20250112-20250118-expected2]
+FAILED pandas/tests/tslibs/test_period.py::test_period_parse_weeks_positive[20250228-20250306-expected3]
+FAILED pandas/tests/tslibs/test_period.py::test_period_parse_weeks_positive[20251125-20251201-expected4]
+FAILED pandas/tests/tslibs/test_period.py::test_period_parse_weeks_positive[19991231-20000106-expected5]
+FAILED pandas/tests/tslibs/test_period.py::test_period_parse_weeks_positive[20161229-20170104-expected6]
+FAILED pandas/tests/tslibs/test_period.py::test_period_parse_weeks_positive[20121231-20130106-expected7]
+FAILED pandas/tests/tslibs/test_period.py::test_period_parse_weeks_positive[20240226-20240303-expected8]
+FAILED pandas/tests/tslibs/test_period.py::test_period_parse_weeks_equivalent[20250106-20250112]
+FAILED pandas/tests/tslibs/test_period.py::test_period_parse_weeks_equivalent[20250101-20250107]
+FAILED pandas/tests/tslibs/test_period.py::test_period_parse_weeks_equivalent[20250112-20250118]
+FAILED pandas/tests/tslibs/test_period.py::test_period_parse_weeks_equivalent[20250228-20250306]
+FAILED pandas/tests/tslibs/test_period.py::test_period_parse_weeks_equivalent[20251125-20251201]
+FAILED pandas/tests/tslibs/test_period.py::test_period_parse_weeks_equivalent[19991231-20000106]
+FAILED pandas/tests/tslibs/test_period.py::test_period_parse_weeks_equivalent[20161229-20170104]
+FAILED pandas/tests/tslibs/test_period.py::test_period_parse_weeks_equivalent[20121231-20130106]
+FAILED pandas/tests/tslibs/test_period.py::test_period_parse_years_retro[1970-1973-expected0]
+FAILED pandas/tests/tslibs/test_period.py::test_period_parse_years_retro[1867-1869-expected1]
+FAILED pandas/tests/tslibs/test_period.py::test_period_parse_years_retro[1849-1851-expected2]
+FAILED pandas/tests/tslibs/test_period.py::test_period_parse_years_retro[1959-1963-expected3]
+FAILED pandas/tests/tslibs/test_period.py::test_period_parse_quarters_retro[1960Q3-1961Q1-expected0]
+FAILED pandas/tests/tslibs/test_period.py::test_period_parse_quarters_retro[1830Q1-1831Q2-expected1]
+FAILED pandas/tests/tslibs/test_period.py::test_period_parse_quarters_retro[1980Q4-1981Q3-expected2]
+FAILED pandas/tests/tslibs/test_period.py::test_period_parse_quarters_retro[1850Q2-1851Q1-expected3]
+FAILED pandas/tests/tslibs/test_period.py::test_period_parse_quarters_retro[1859Q2-1860Q1-expected4]
+FAILED pandas/tests/tslibs/test_period.py::test_period_parse_quarters_retro[1929Q3-1930Q2-expected5]
+FAILED pandas/tests/tslibs/test_period.py::test_old_and_retro_periods[19171206-19171212-2]
+FAILED pandas/tests/tslibs/test_period.py::test_old_and_retro_periods[19681230-19690105-6]
+FAILED pandas/tests/tslibs/test_period.py::test_old_and_retro_periods[18640225-18640302-2]
+FAILED pandas/tests/tslibs/test_period.py::test_old_and_retro_periods[19800226-19800303-0]
+FAILED pandas/tests/tslibs/test_period.py::test_old_and_retro_periods[18191230-18200105-2]
+FAILED pandas/tests/tslibs/test_period.py::test_old_and_retro_periods[19491228-19500103-1]
+FAILED pandas/tests/tslibs/test_period.py::test_old_and_retro_periods_line_formatted_reinitialised[18690924-18690930]
+FAILED pandas/tests/tslibs/test_period.py::test_old_and_retro_periods_line_formatted_reinitialised[19171206-19171212]
+FAILED pandas/tests/tslibs/test_period.py::test_old_and_retro_periods_line_formatted_reinitialised[19681230-19690105]
+FAILED pandas/tests/tslibs/test_period.py::test_old_and_retro_periods_line_formatted_reinitialised[19751229-19760104]
+FAILED pandas/tests/tslibs/test_period.py::test_old_and_retro_periods_line_formatted_reinitialised[19931231-19940106]
+FAILED pandas/tests/tslibs/test_period.py::test_old_and_retro_periods_line_formatted_reinitialised[19491228-19500103]
+FAILED pandas/tests/tslibs/test_period.py::test_old_and_retro_periods_line_formatted_reinitialised[18191230-18200105]
+FAILED pandas/tests/tslibs/test_period.py::test_old_and_retro_periods_line_formatted_reinitialised[18531229-18540104]
+FAILED pandas/tests/tslibs/test_period.py::test_old_and_retro_periods_line_formatted_reinitialised[18640225-18640302]
+FAILED pandas/tests/tslibs/test_period.py::test_old_and_retro_periods_line_formatted_reinitialised[19800226-19800303]
+======================== 55 failed, 70 passed in 3.65s =========================
